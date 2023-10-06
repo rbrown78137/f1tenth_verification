@@ -12,7 +12,7 @@ import verification.collision_verification.collision_verification_constants as c
 
 font = {'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 14}
+        'size'   : 16}
 
 matplotlib.rc('font', **font)
 
@@ -79,8 +79,8 @@ if __name__ == "__main__":
     ax.plot(predicted_x_positions, predicted_y_positions, marker="o", markersize=10, markeredgecolor=(0,0,0), markerfacecolor=(1.0,1.0,1.0)) 
 
     legend_elements = [
-                       mlines.Line2D([0], [0], color=(0,0,0), marker='s', markersize=12, lw=0, label='Ground Truth',markeredgecolor=(0,0,0), markerfacecolor=(1.0,1.0,1.0)),
-                       mlines.Line2D([0], [0], color=(0,0,0), marker='o', markersize=12, lw=0, label='Predicted Path',markeredgecolor=(0,0,0), markerfacecolor=(1.0,1.0,1.0))
+                       mlines.Line2D([0], [0], color=(0,0,0), marker='s', markersize=12, lw=0, label='Ground Truth Path',markeredgecolor=(0,0,0), markerfacecolor=(1.0,1.0,1.0)),
+                       mlines.Line2D([0], [0], color=(0,0,0), marker='o', markersize=12, lw=0, label='Model Path',markeredgecolor=(0,0,0), markerfacecolor=(1.0,1.0,1.0))
                        ]
 
     ax.legend(handles=legend_elements,loc="upper right")
@@ -88,17 +88,17 @@ if __name__ == "__main__":
     fig.set_figheight(10)
     fig.set_figwidth(10)
 
-    ax.set_title("Ground Truth Vs Model Path of Oher Vehicle",fontdict={'family' : 'normal',
+    ax.set_title("Ground Truth Vs Predictd Model Path",fontdict={'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 18})
-    ax.set_ylabel("Y",fontdict={'family' : 'normal',
+        'size'   : 17})
+    ax.set_ylabel("Y (meters)",fontdict={'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 18})
-    ax.set_xlabel("X",fontdict={'family' : 'normal',
+        'size'   : 17})
+    ax.set_xlabel("X (meters)",fontdict={'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 18})
-    ax.set_ylim(0,2.2)
-    ax.set_xlim(-0.8,0)
+        'size'   : 17})
+    ax.set_ylim(0.4,1.8)
+    ax.set_xlim(-0.6,-0.3)
     # fig.canvas.draw()
     plt.plot()
     plt.show(block=True)

@@ -30,6 +30,13 @@ from nav_msgs.msg import Odometry
 import threading
 import sys
 import os
+import matplotlib
+
+font = {'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 16}
+
+matplotlib.rc('font', **font)
 
 start_time = None
 running_frame_count = 0
@@ -198,8 +205,12 @@ def animate(i):
     ax1.cla()
     ax1.set_xlim([-1.4,1])
     ax1.set_ylim([-1,1])
-    ax1.set_xlabel("$X_{\omega} - X_{\pi}$")
-    ax1.set_ylabel("$Y_{\omega} - Y_{\pi}$")
+    ax1.set_xlabel("$X_{\omega} - X_{\pi}$ (meters)",fontdict={'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 17})
+    ax1.set_ylabel("$Y_{\omega} - Y_{\pi}$ (meters)",fontdict={'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 17})
     sensor_global_variable_lock.acquire()
     polygon_copy = copy.deepcopy(last_set_of_polygons)
     sensor_global_variable_lock.release()
@@ -214,7 +225,18 @@ def animate(i):
     #     ax1.set_xlim([0,0])
     #     ax1.set_ylim([0,0])
     # print("Finished Plotting")
-    ax1.set_title("Collision Bounding Polytope")
+    ax1.set_title("Collision Bounding Polytope",fontdict={'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 17})
+    plt.margins(x=0)
+    fig.subplots_adjust(
+        top=0.95,
+        bottom=0.11,
+        left=0.2,
+        right=0.95,
+        hspace=0.2,
+        wspace=0.2
+    )
     img = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
     img = img.reshape(fig.canvas.get_width_height()[::-1] + (3,))
     img = cv.resize(img,(480,480))

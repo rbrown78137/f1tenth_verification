@@ -43,7 +43,7 @@ COLOR_MAP = {"blue":[0,0,255],"red":[255,0,0],"green":[0,127,0],"yellow":[255,25
 # COLOR_MAP = {"blue":[255,255,255],"red":[255,255,255],"green":[255,255,255],"yellow":[255,255,255],"purple":[255,255,255]}
 font = {'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 14}
+        'size'   : 16}
 
 matplotlib.rc('font', **font)
 
@@ -250,13 +250,21 @@ def get_graph_instance(pose_history,actuation_history,pose_time_history,reachabi
     draw_centers(X_0, sigma_0, U_0, ax)
     ax.set_title("Predicted Movement of Both Vehicles",fontdict={'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 18})
+        'size'   : 17})
     ax.set_ylabel("Y",fontdict={'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 18})
+        'size'   : 17})
     ax.set_xlabel("X",fontdict={'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 18})
+        'size'   : 17})
+    fig.subplots_adjust(
+        top=0.95,
+        bottom=0.11,
+        left=0.15,
+        right=0.95,
+        hspace=0.2,
+        wspace=0.2
+    )
     fig.canvas.draw()
     img = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
     plt.close('all')

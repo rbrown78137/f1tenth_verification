@@ -17,6 +17,14 @@ import verification.collision_verification.transform_perception_input as transfo
 import verification.collision_verification.transform_odometry_input as transform_odometry_input
 import verification.collision_verification.initial_state as initial_state
 import pickle
+import matplotlib
+
+font = {'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 16}
+
+matplotlib.rc('font', **font)
+
 # Collision Time
 COLLISION_TIME = -1
 if constants.RECORDING_NUMBER ==1:
@@ -157,9 +165,15 @@ def animate(i):
     sensor_global_variable_lock.release()
     global_subplot.cla()
     global_subplot.set_ylim([0,1])
-    global_subplot.set_ylabel("Probability of Collision")
-    global_subplot.set_xlabel("Timesteps")
-    global_subplot.set_title("Probability of Collision For Different Steering Angles")
+    global_subplot.set_ylabel("Probability of Collision",fontdict={'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 17})
+    global_subplot.set_xlabel("Timesteps Elapsed",fontdict={'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 17})
+    global_subplot.set_title("Future Probabilities of Collision",fontdict={'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 17})
     if len(probability_collision_history)>0 and len(probability_collision_history[0])>0:
         # SET START TIME FOR FRAME RECORDING
         if global_frame_recording_start_time is None:
@@ -174,6 +188,14 @@ def animate(i):
         if COLLISION_TIME > 0:
             global_subplot.vlines(x=[(COLLISION_TIME-probability_collision_history[0][0]) /constants.REACHABILITY_DT],ymin=0,ymax=1,color=(0,0,0),linestyles="dashed", label="Point of Collision")
     global_subplot.legend(loc="upper left")
+    global_figure.subplots_adjust(
+        top=0.95,
+        bottom=0.11,
+        left=0.15,
+        right=0.95,
+        hspace=0.2,
+        wspace=0.2
+    )
     img = np.fromstring(global_figure.canvas.tostring_rgb(), dtype=np.uint8, sep='')
     img = img.reshape(global_figure.canvas.get_width_height()[::-1] + (3,))
     img = cv.resize(img,(480,480))
