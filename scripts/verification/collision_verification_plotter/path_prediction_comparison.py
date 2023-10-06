@@ -35,6 +35,7 @@ if __name__ == "__main__":
 
     ground_truth_x_positions = []
     ground_truth_y_positions = []
+    
     idx_of_interest = 0
     time_of_prediction = prediction_data[idx_of_interest][0]
 
