@@ -2,6 +2,7 @@ import time
 import verification.collision_verification.collision_probability as collision_probability
 import verification.collision_verification.initial_state as initial_state
 from fast_pool import FastPool
+import pickle
 
 if __name__ == "__main__":
     print("Timings in miliseconds\n")
@@ -83,4 +84,16 @@ if __name__ == "__main__":
     end_7 = time.time()
     print(f"Multi-core, 1000 Star : {1000*(end_7-start_7)}")
 
+    time.sleep(4)
+    #initial state creation
+    with open('saved_data/old_video/frame_history_3.pkl','rb') as f:
+        prediction_data = pickle.load(f)
+        for idx in range(20):
+            idx_of_interest = 180 # Was 160
+            start_time = time.time()
+            X_0, sigma_0, U_0 = initial_state.initial_state(prediction_data[idx_of_interest][1][0],prediction_data[idx_of_interest][1][1],prediction_data[idx_of_interest][1][2])
+            end_time = time.time()
+            print(f"Initial State Time:{1000*(end_time-start_time)}")
+
     fast_pool.shutdown()
+    

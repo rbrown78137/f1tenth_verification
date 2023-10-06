@@ -9,16 +9,18 @@ import copy
 from statistics import mean
 # SOLVE_USING_ANGLE_DTHETA = True
 
-def initial_state(prefiltered_pose_history,prefiltered_actuation_history, pose_time_history):
+def initial_state(prefiltered_pose_history,prefiltered_actuation_history, prefiltered_pose_time_history):
     pose_history = None
-    if len(prefiltered_pose_history) < 500:
+    if len(prefiltered_pose_history) < 100:
         pose_history = copy.deepcopy(prefiltered_pose_history)
+        pose_time_history = copy.deepcopy(prefiltered_pose_time_history)
     else:
-        pose_history = copy.deepcopy(prefiltered_pose_history[0:500])
+        pose_history = copy.deepcopy(prefiltered_pose_history[0:100])
+        pose_time_history = copy.deepcopy(prefiltered_pose_time_history[0:100])
     start_time_initial_state = time.time()
     mu_zeta_omega,sigma_zeta_omega = 0,0
     mu_V_omega, sigma_V_omega = 0,0
-    actuation_history = [[item[0], min(constants.MAX_CAR_STEERING_ANGLE,max(-constants.MAX_CAR_STEERING_ANGLE,item[1])) ] for item in prefiltered_actuation_history[:500]]
+    actuation_history = [[item[0], min(constants.MAX_CAR_STEERING_ANGLE,max(-constants.MAX_CAR_STEERING_ANGLE,item[1])) ] for item in prefiltered_actuation_history[:100]]
     if len(pose_history)>1:
         mu_zeta_omega,sigma_zeta_omega,mu_V_omega = estimate_omega_velocity_steering_2_points_with_angle(pose_history, actuation_history, pose_time_history)
     # if "-1" in pose_history and "-2" in pose_history and not SOLVE_USING_ANGLE_DTHETA:
@@ -56,12 +58,6 @@ def initial_state(prefiltered_pose_history,prefiltered_actuation_history, pose_t
     X_0 = np.array([mu_x_pi,mu_y_pi,mu_varphi_x_pi,mu_varphi_y_pi,mu_x_omega,mu_y_omega,mu_varphi_x_omega,mu_varphi_y_omega])
     sigma_0 = np.array([sigma_x_pi,sigma_y_pi,sigma_varphi_x_pi,sigma_varphi_y_pi,sigma_x_omega,sigma_y_omega,sigma_varphi_x_omega,sigma_varphi_y_omega])
     U_0 = [V_pi,zeta_pi,mu_V_omega,mu_zeta_omega]
-    if np.isnan(X_0).any():
-        debug_var_1 = 0
-    if np.isnan(sigma_0).any():
-        debug_var_1 = 0
-    if np.isnan(U_0).any():
-        debug_var_1 = 0
     end_time_initial_state = time.time()
     if constants.LOG_TIMING_INFO:
         print(f"Initial State Time: {end_time_initial_state-start_time_initial_state}")

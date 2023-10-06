@@ -83,6 +83,7 @@ def process_reachability_step():
     copy_actuation_history = copy.deepcopy(actuation_history)
     copy_pose_time_history = copy.deepcopy(pose_time_history)
     sensor_global_variable_lock.release()
+    start_time = time.time()
     # print(f"Processing Reachability Step:{current_pose_from_perception, current_control_from_sensor}")
     if len(copy_pose_history)>0 and len(copy_pose_time_history)>0:
         # TEMP DEBUG LINES VV
@@ -98,7 +99,8 @@ def process_reachability_step():
         probabilities_of_collision  = fast_pool.map(collision_probability.multi_core_future_collision_probabilites, inputs)
         probstar_calculation_end_time = time.time()    
         if constants.LOG_TIMING_INFO:
-            print(f"Probstar Calculation Time: {probstar_calculation_end_time-probstar_calculation_start_time}")          
+            print(f"Probstar Calculation Time: {probstar_calculation_end_time-probstar_calculation_start_time}")
+            print(f"Total Time: {probstar_calculation_end_time-start_time}")                 
         # inputs = [[1,k,constants.REACHABILITY_DT,constants.MODEL_SUBTIME_STEPS,pose_history,actuation_history,pose_dt_history] for k in range(constants.K_STEPS)]
         # probabilities_of_collision  = fast_pool.map(collision_probability.single_thread_future_collision_probabilites, inputs) 
         float_formatter = "{:.2f}".format
