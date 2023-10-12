@@ -184,7 +184,7 @@ def animate(i):
             global_subplot.plot(x,y,color=color_to_display,label=str(future_timestep_idx+1)+" future time steps")
         if COLLISION_TIME > 0:
             global_subplot.vlines(x=[(COLLISION_TIME-probability_collision_history[0][0]) /constants.REACHABILITY_DT],ymin=0,ymax=1,color=(0,0,0),linestyles="dashed", label="Point of Collision")
-    global_subplot.legend(loc="upper left")
+    # global_subplot.legend(loc="upper left")
     global_figure.subplots_adjust(
         top=0.95,
         bottom=0.11,

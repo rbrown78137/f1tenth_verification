@@ -95,7 +95,9 @@ def plot_polygon(points,title, alpha=.4, color='g', linestyle='solid', fill=True
         points, alpha=alpha, color=color, linestyle=linestyle, fill=fill,
         linewidth=linewidth,label= title)
     ax1.add_patch(patch)
-    ax1.legend(loc="upper left")
+    # ax1.legend(loc="upper left",font={'family' : 'normal',
+    #     'weight' : 'bold',
+    #     'size'   : 16})
     
 def contraint_plotter():
     # print("Got To constraints")

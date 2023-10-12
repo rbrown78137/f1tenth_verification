@@ -19,4 +19,4 @@ K_STEPS = 5
 # Variable To adjust odometry and perception input 
 RECORDING_NUMBER = 1
 
-LOG_TIMING_INFO = True
+LOG_TIMING_INFO = False

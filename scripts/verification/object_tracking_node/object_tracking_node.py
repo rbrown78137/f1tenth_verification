@@ -19,7 +19,7 @@ import statistics
 import verification.object_tracking_node.image_processing as image_processing
 import time
 
-LOG_RUNTIME = True
+LOG_RUNTIME = False
 INPUT_DELAY = 0.4
 # INPUT_DELAY = 0.6
 

@@ -234,11 +234,11 @@ def get_graph_instance(pose_history,actuation_history,pose_time_history,reachabi
     fig = plt.figure()
 
     ax = fig.add_subplot()
-    legend_elements = [mlines.Line2D([0], [0], color=COLORS[0], lw=2, label='1 Future Step'),
-                       mlines.Line2D([0], [0], color=COLORS[1], lw=2, label='2 Future Steps'),
-                       mlines.Line2D([0], [0], color=COLORS[2], lw=2, label='3 Future Steps'),
-                       mlines.Line2D([0], [0], color=COLORS[3], lw=2, label='4 Future Steps'),
-                       mlines.Line2D([0], [0], color=COLORS[4], lw=2, label='5 Future Steps'),
+    legend_elements = [#mlines.Line2D([0], [0], color=COLORS[0], lw=2, label='1 Future Step'),
+                       #mlines.Line2D([0], [0], color=COLORS[1], lw=2, label='2 Future Steps'),
+                       #mlines.Line2D([0], [0], color=COLORS[2], lw=2, label='3 Future Steps'),
+                       #mlines.Line2D([0], [0], color=COLORS[3], lw=2, label='4 Future Steps'),
+                       #mlines.Line2D([0], [0], color=COLORS[4], lw=2, label='5 Future Steps'),
                        mlines.Line2D([0], [0], color=(0,0,0), marker='s', markersize=12, lw=0, label='Ego Vehicle',markeredgecolor=(0,0,0), markerfacecolor=(1.0,1.0,1.0)),
                        mlines.Line2D([0], [0], color=(0,0,0), marker='o', markersize=12, lw=0, label='Other Vehicle',markeredgecolor=(0,0,0), markerfacecolor=(1.0,1.0,1.0))
                        ]
