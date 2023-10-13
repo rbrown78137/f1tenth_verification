@@ -22,7 +22,7 @@ import matplotlib
 
 font = {'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 16}
+        'size'   : 13}
 
 matplotlib.rc('font', **font)
 
@@ -35,7 +35,7 @@ if constants.RECORDING_NUMBER ==1:
 
 # Algorithm Settings
 braking_forces = [1.6, 0.8, 0.4, 0.2, 0]
-breaking_force_labels = ["100%","50%","25%","12.5%","0%"]
+breaking_force_labels = ["100% Max Force","50% Max Force","25% Max Force","12.5% Max Force","No Braking Force"]
 braking_forces.reverse()
 breaking_force_labels.reverse()
 
@@ -167,13 +167,13 @@ def animate(i):
     global_subplot.set_ylim([0,1])
     global_subplot.set_ylabel("Probability of Collision",fontdict={'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 17})
+        'size'   : 15})
     global_subplot.set_xlabel("Timesteps Elapsed",fontdict={'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 17})
+        'size'   : 15})
     global_subplot.set_title("Future Probabilities of Collision",fontdict={'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 17})
+        'size'   : 15})
     if len(probability_collision_history)>0 and len(probability_collision_history[0])>0:
         # SET START TIME FOR FRAME RECORDING
         if global_frame_recording_start_time is None:
@@ -187,7 +187,7 @@ def animate(i):
             global_subplot.plot(x,y,color=color_to_display,label=breaking_force_labels[modification_idx])
         if COLLISION_TIME > 0:
             global_subplot.vlines(x=[(COLLISION_TIME-probability_collision_history[0][0]) /constants.REACHABILITY_DT],ymin=0,ymax=1,color=(0,0,0),linestyles="dashed", label="Point of Collision")
-    global_subplot.legend(loc="upper left")
+    global_subplot.legend(loc="upper left", prop={'family':'normal', 'size':11})
     global_figure.subplots_adjust(
         top=0.95,
         bottom=0.11,

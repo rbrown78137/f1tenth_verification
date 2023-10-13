@@ -31,7 +31,7 @@ VIEW_Y_MAX = 0
 
 FUTURE_TIME_STEPS = 5
 PROBABILITY_SQUARE_DISTANCE = 0.1
-PROBABILITY_SQUARE_DISTANCE_REFINEMENT = 0.01 #0.01
+PROBABILITY_SQUARE_DISTANCE_REFINEMENT = 0.005 #0.01
 
 PROB_THRESHOLD = 1e-4 * PROBABILITY_SQUARE_DISTANCE **2
 CIRCLE_RADIUS = 0.02
@@ -242,9 +242,9 @@ def get_graph_instance(pose_history,actuation_history,pose_time_history,reachabi
                        mlines.Line2D([0], [0], color=(0,0,0), marker='s', markersize=12, lw=0, label='Ego Vehicle',markeredgecolor=(0,0,0), markerfacecolor=(1.0,1.0,1.0)),
                        mlines.Line2D([0], [0], color=(0,0,0), marker='o', markersize=12, lw=0, label='Other Vehicle',markeredgecolor=(0,0,0), markerfacecolor=(1.0,1.0,1.0))
                        ]
-    ax.legend(handles=legend_elements,loc="upper right")
-    fig.set_figheight(10)
-    fig.set_figwidth(10)
+    # ax.legend(handles=legend_elements,loc="upper right")
+    fig.set_figheight(6)
+    fig.set_figwidth(6)
     # Display the image
     ax.imshow(final_image,aspect='auto',extent=(VIEW_X_MIN,VIEW_X_MAX,VIEW_Y_MIN,VIEW_Y_MAX))
     draw_centers(X_0, sigma_0, U_0, ax)
@@ -286,8 +286,8 @@ def get_VIEW(idx):
     VIEW_Y_MAX = 3
 
     if idx == 1:
-        VIEW_X_MIN = -.4
-        VIEW_X_MAX = 0.6 
+        VIEW_X_MIN = -.3
+        VIEW_X_MAX = 0.2 
         VIEW_Y_MIN = -0.2 
         VIEW_Y_MAX = 2.5
 
@@ -334,25 +334,28 @@ def get_VIEW(idx):
         VIEW_Y_MAX = 3
 
 
-    VIEW_X_MIN += 1e-7
-    VIEW_X_MAX += 1e-7
-    VIEW_Y_MIN += 1e-7
-    VIEW_Y_MAX += 1e-7
+    # VIEW_X_MIN += 1e-7
+    # VIEW_X_MAX += 1e-7
+    # VIEW_Y_MIN += 1e-7
+    # VIEW_Y_MAX += 1e-7
 
 
 if __name__ == "__main__":
     plt.ioff()
     plt.switch_backend('agg')
-    for i in range(6,7):
+    for i in range(5,6):
         get_VIEW(i)
-        with open('saved_data/frame_history_'+str(i)+'.pkl', 'rb') as f:
+        with open('saved_data/old_video/frame_history_'+str(i)+'.pkl', 'rb') as f:
             history = pickle.load(f)
             global_video_writer = cv.VideoWriter('/home/ryan/Paper_Video/car_tracker_'+str(i)+'.avi', 
                                 cv.VideoWriter_fourcc(*'MJPG'),
                                 10, (480,480))
             print(f"Starting Recording\n")
             for frame_idx,frame_data in enumerate(history):
-                if frame_idx> 250:
+                key_frame = 150
+                if frame_idx < key_frame-1:
+                    continue
+                if frame_idx > key_frame+1:
                     continue
                 # if frame_idx > 1:
                 #     continue

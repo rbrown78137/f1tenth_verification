@@ -10,17 +10,18 @@ from statistics import mean
 # SOLVE_USING_ANGLE_DTHETA = True
 
 def initial_state(prefiltered_pose_history,prefiltered_actuation_history, prefiltered_pose_time_history):
+    max_history_to_filter = 20
     pose_history = None
-    if len(prefiltered_pose_history) < 100:
+    if len(prefiltered_pose_history) < 20:
         pose_history = copy.deepcopy(prefiltered_pose_history)
         pose_time_history = copy.deepcopy(prefiltered_pose_time_history)
     else:
-        pose_history = copy.deepcopy(prefiltered_pose_history[0:100])
-        pose_time_history = copy.deepcopy(prefiltered_pose_time_history[0:100])
+        pose_history = copy.deepcopy(prefiltered_pose_history[0:20])
+        pose_time_history = copy.deepcopy(prefiltered_pose_time_history[0:20])
     start_time_initial_state = time.time()
     mu_zeta_omega,sigma_zeta_omega = 0,0
     mu_V_omega, sigma_V_omega = 0,0
-    actuation_history = [[item[0], min(constants.MAX_CAR_STEERING_ANGLE,max(-constants.MAX_CAR_STEERING_ANGLE,item[1])) ] for item in prefiltered_actuation_history[:100]]
+    actuation_history = [[item[0], min(constants.MAX_CAR_STEERING_ANGLE,max(-constants.MAX_CAR_STEERING_ANGLE,item[1])) ] for item in prefiltered_actuation_history[:20]]
     if len(pose_history)>1:
         mu_zeta_omega,sigma_zeta_omega,mu_V_omega = estimate_omega_velocity_steering_2_points_with_angle(pose_history, actuation_history, pose_time_history)
     # if "-1" in pose_history and "-2" in pose_history and not SOLVE_USING_ANGLE_DTHETA:
@@ -67,7 +68,7 @@ def initial_state(prefiltered_pose_history,prefiltered_actuation_history, prefil
 def estimate_omega_velocity_steering_2_points_with_angle(pose_history, actuation_history, pose_time_history):
     poses_in_current_frame = translate_past_points_to_current_reference_frame(pose_history, actuation_history, pose_time_history)
     num_predictions = 0 # Number of steering and velocity predictions that can be averaged
-   
+    max_predictions_to_average = constants.STEERING_AND_VELOCITY_PREDICTIONS_TO_AVERAGE
     #Calculate num predictions
     for i in range(len(poses_in_current_frame)):
         if pose_time_history[0]-pose_time_history[i] > constants.POSE_DT:
@@ -86,7 +87,7 @@ def estimate_omega_velocity_steering_2_points_with_angle(pose_history, actuation
     steering_angles = []
     steering_angle_deviations = []
     velocities = []
-    for i in range(num_predictions):
+    for i in range(min(max_predictions_to_average,num_predictions)):
         previous_time_step_start_idx = -1
         for j in range(i+1,len(poses_in_current_frame)):
             if pose_time_history[0]-pose_time_history[j] > constants.POSE_DT:
@@ -119,7 +120,6 @@ def estimate_omega_velocity_steering_2_points_with_angle(pose_history, actuation
         dist_y_1 = [mean(pose_1_array[1]),mean(pose_1_array[5])]
         dist_theta_i_1 = [mean(pose_1_array[2]),mean(pose_1_array[6])]
         dist_theta_j_1 = [mean(pose_1_array[3]),mean(pose_1_array[7])]
-
         # Calculate steering angle and velocity using distributions for two poses [x_2,y_2,theta_i_2,theta_j_2] and [x_1,y_1,theta_i_1,theta_j_1]
         mu_zeta,sigma_zeta,mu_V = 0,0,0
         if is_car_moving(dist_x_2[0],dist_y_2[0],dist_theta_i_2[0],dist_theta_j_2[0],dist_x_1[0],dist_y_1[0],constants.MINIMUM_VELOCITY_CLIPPING_VALUE * pose_dt):
