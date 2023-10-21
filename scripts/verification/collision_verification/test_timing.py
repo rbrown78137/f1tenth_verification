@@ -23,25 +23,25 @@ if __name__ == "__main__":
     # Single Core Test Results
     
     n = 1
-    start_1 = time.time()
-    probabilities_1 = collision_probability.single_thread_future_collision_probabilites(n,0,reachability_dt,model_sub_time_steps,pose_history,actuation_history,pose_dt_history)
-    end_1 = time.time()
-    print(f"One Core, 1 Star : {1000*(end_1-start_1)}")
-    n = 10
-    start_2 = time.time()
-    probabilities_2 = collision_probability.single_thread_future_collision_probabilites(n,0,reachability_dt,model_sub_time_steps,pose_history,actuation_history,pose_dt_history)
-    end_2 = time.time()
-    print(f"One Core, 10 Star : {1000*(end_2-start_2)}")
-    n = 100
-    start_3 = time.time()
-    probabilities_3 = collision_probability.single_thread_future_collision_probabilites(n,0,reachability_dt,model_sub_time_steps,pose_history,actuation_history,pose_dt_history)
-    end_3 = time.time()
-    print(f"One Core, 100 Star : {1000*(end_3-start_3)}")
-    n = 1000
-    start_4 = time.time()
-    probabilities_4 = collision_probability.single_thread_future_collision_probabilites(n,0,reachability_dt,model_sub_time_steps,pose_history,actuation_history,pose_dt_history)
-    end_4 = time.time()
-    print(f"One Core, 1000 Star : {1000*(end_4-start_4)}")
+    # start_1 = time.time()
+    # probabilities_1 = collision_probability.single_thread_future_collision_probabilites(n,0,reachability_dt,model_sub_time_steps,pose_history,actuation_history,pose_dt_history)
+    # end_1 = time.time()
+    # print(f"One Core, 1 Star : {1000*(end_1-start_1)}")
+    # n = 10
+    # start_2 = time.time()
+    # probabilities_2 = collision_probability.single_thread_future_collision_probabilites(n,0,reachability_dt,model_sub_time_steps,pose_history,actuation_history,pose_dt_history)
+    # end_2 = time.time()
+    # print(f"One Core, 10 Star : {1000*(end_2-start_2)}")
+    # n = 100
+    # start_3 = time.time()
+    # probabilities_3 = collision_probability.single_thread_future_collision_probabilites(n,0,reachability_dt,model_sub_time_steps,pose_history,actuation_history,pose_dt_history)
+    # end_3 = time.time()
+    # print(f"One Core, 100 Star : {1000*(end_3-start_3)}")
+    # n = 1000
+    # start_4 = time.time()
+    # probabilities_4 = collision_probability.single_thread_future_collision_probabilites(n,0,reachability_dt,model_sub_time_steps,pose_history,actuation_history,pose_dt_history)
+    # end_4 = time.time()
+    # print(f"One Core, 1000 Star : {1000*(end_4-start_4)}")
 
     # Multiple Core Test Results
     fast_pool = FastPool(20)
@@ -72,17 +72,17 @@ if __name__ == "__main__":
     
     start_6 = time.time()
     X_0,sigma_0,U_0 = initial_state.initial_state(pose_history,actuation_history,pose_dt_history)
-    inputs = [[n,0,reachability_dt,model_sub_time_steps,X_0,sigma_0,U_0]] * 100
+    inputs = [[n,0,reachability_dt,model_sub_time_steps,X_0,sigma_0,U_0]] * 20
     prob  = fast_pool.map(collision_probability.multi_core_future_collision_probabilites, inputs) 
     end_6 = time.time()
-    print(f"Multi-core, 100 Star : {1000*(end_6-start_6)}")
+    print(f"Multi-core, 20 Star : {1000*(end_6-start_6)}")
 
     start_7 = time.time()
     X_0,sigma_0,U_0 = initial_state.initial_state(pose_history,actuation_history,pose_dt_history)
-    inputs = [[n,0,reachability_dt,model_sub_time_steps,X_0,sigma_0,U_0]] * 1000
+    inputs = [[n,0,reachability_dt,model_sub_time_steps,X_0,sigma_0,U_0]] * 100
     prob  = fast_pool.map(collision_probability.multi_core_future_collision_probabilites, inputs) 
     end_7 = time.time()
-    print(f"Multi-core, 1000 Star : {1000*(end_7-start_7)}")
+    print(f"Multi-core, 100 Star : {1000*(end_7-start_7)}")
 
     time.sleep(4)
     #initial state creation

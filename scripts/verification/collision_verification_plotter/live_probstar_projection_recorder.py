@@ -180,21 +180,22 @@ def pose_callback(pose_data):
         sensor_pose_time = pose_data.data[0]
         sensor_pose_data = pose_data.data[1:9]
     car_reference_frame_pose_data = transform_perception_input.translate_pose_data(sensor_pose_data)
-    sensor_global_variable_lock.acquire()
-    if(len(sensor_pose_data) == 0):
-        global_pose_history.clear()
-        global_actuation_history.clear()
-        global_pose_time_history.clear()
-    else:
-        while(len(global_pose_history)>0 and abs(global_pose_time_history[len(global_pose_time_history)-1]-sensor_pose_time)>MAX_TIME_TO_TRACK_POSE):
-            global_pose_time_history.pop()
-            global_pose_history.pop()
-            global_actuation_history.pop()
-        global_pose_history.insert(0,car_reference_frame_pose_data)
-        global_actuation_history.insert(0,recieved_control_from_sensor)
-        global_pose_time_history.insert(0,sensor_pose_time)
-    last_logged_time = sensor_pose_time
-    sensor_global_variable_lock.release()
+    if not(recieved_control_from_sensor == None):
+        sensor_global_variable_lock.acquire()
+        if(len(sensor_pose_data) == 0):
+            global_pose_history.clear()
+            global_actuation_history.clear()
+            global_pose_time_history.clear()
+        else:
+            while(len(global_pose_history)>0 and abs(global_pose_time_history[len(global_pose_time_history)-1]-sensor_pose_time)>MAX_TIME_TO_TRACK_POSE):
+                global_pose_time_history.pop()
+                global_pose_history.pop()
+                global_actuation_history.pop()
+            global_pose_history.insert(0,car_reference_frame_pose_data)
+            global_actuation_history.insert(0,recieved_control_from_sensor)
+            global_pose_time_history.insert(0,sensor_pose_time)
+        last_logged_time = sensor_pose_time
+        sensor_global_variable_lock.release()
     # print(f"Pose Data Array: {pose_data.data}")
     
 

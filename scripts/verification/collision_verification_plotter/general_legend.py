@@ -21,13 +21,13 @@ if __name__ == "__main__":
                        mlines.Line2D([0], [0], color=COLORS[2], lw=2, label='3 Future Steps'),
                        mlines.Line2D([0], [0], color=COLORS[3], lw=2, label='4 Future Steps'),
                        mlines.Line2D([0], [0], color=COLORS[4], lw=2, label='5 Future Steps'),
-                       mlines.Line2D([0], [0], color=(0,0,0), lw=2, linestyle="dashed", label="Point of Collision"),
+                #        mlines.Line2D([0], [0], color=(0,0,0), lw=2, linestyle="dashed", label="Point of Collision"),
                        mlines.Line2D([0], [0], color=(0,0,0), marker='s', markersize=12, lw=0, label='Ego Vehicle',markeredgecolor=(0,0,0), markerfacecolor=(1.0,1.0,1.0)),
                        mlines.Line2D([0], [0], color=(0,0,0), marker='o', markersize=12, lw=0, label='Other Vehicle',markeredgecolor=(0,0,0), markerfacecolor=(1.0,1.0,1.0))
                        ]
     
     fig.legend(handles=legend_elements)
-
+    fig.tight_layout()
     plt.gca().set_axis_off()
     
     # fig.canvas.draw()

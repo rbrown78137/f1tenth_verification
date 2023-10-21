@@ -5,52 +5,47 @@ import numpy as np
 import verification.collision_verification.model_reachability as model_reachability
 
 # Input: 2 bounding boxes represented as a list of verticies corresponding to the covnex hull of bounding box 
-# Output: List of verticies of convex hull of minkowski sum
-def minkowski_sum_2d_convex_hull(bounding_box_verticies_1,bounding_box_verticies_2):
-    # creates vertex polar angle tuple in form (vertex, polar_angle)
-    polar_coordinate_pair_1 = [((
-        vert,
-        (atan2(vert[1],vert[0]) if vert[0] != 0 else 0)
-        )) for vert in bounding_box_verticies_1]
-    polar_coordinate_pair_2 = [((
-        vert,
-        (atan2(vert[1],vert[0]) if vert[0] != 0 else 0)
-        )) for vert in bounding_box_verticies_2]
-    
-    # sort by polar angle
-    polar_coordinate_pair_1.sort(key = lambda x:x[1])
-    polar_coordinate_pair_2.sort(key = lambda x:x[1])
+# Output: List of verticies of convex hull of minkowski difference
+# Follows planar case algorithm in https://en.wikipedia.org/wiki/Minkowski_addition
+def minkowski_difference_2d_convex_hull(bounding_box_verticies_1,bounding_box_verticies_2):
+    # Convert to minkowski addition problem
+    bounding_box_verticies_2 = [[-1*vert[0],-1*vert[1]] for vert in bounding_box_verticies_2]
 
-    # creates tuple list ((array_index, item_index), (vertex, polar_angle))
-    vertex_with_index_1 = [ ([1,idx], polar_coordinate_pair_1[idx]) for idx in range(len(polar_coordinate_pair_1))]
-    vertex_with_index_2 = [ ([2,idx], polar_coordinate_pair_2[idx]) for idx in range(len(polar_coordinate_pair_2))]
-    polar_coordinate_pair_array = vertex_with_index_1 + vertex_with_index_2
+    # Sort by Polar Angle
+    bounding_box_verticies_1.sort(key=lambda x:atan2(x[1],x[0]))
+    bounding_box_verticies_2.sort(key=lambda x:atan2(x[1],x[0]))
+    # Create edges
+    # [dx,dy,origninal box edge belongs to, starting vertex in original box]
+    edges = []
+    for vert_idx in range(len(bounding_box_verticies_1)):
+        next_vert_idx = vert_idx + 1 if vert_idx + 1 < len(bounding_box_verticies_1) else 0
+        dx = bounding_box_verticies_1[next_vert_idx][0] - bounding_box_verticies_1[vert_idx][0]
+        dy = bounding_box_verticies_1[next_vert_idx][1]- bounding_box_verticies_1[vert_idx][1]
+        edges.append([dx,dy,1,vert_idx])
 
-    # Sort combined pair by angle
-    polar_coordinate_pair_array.sort(key = lambda x:x[1][1])
-    current_coordinate = (polar_coordinate_pair_1[0][0][0]+polar_coordinate_pair_2[0][0][0],polar_coordinate_pair_1[0][0][1]+polar_coordinate_pair_2[0][0][1])
-    minkowski_sum_vertex_array = []
+    for vert_idx in range(len(bounding_box_verticies_2)):
+        next_vert_idx = vert_idx + 1 if vert_idx + 1 < len(bounding_box_verticies_2) else 0
+        dx = bounding_box_verticies_2[next_vert_idx][0] - bounding_box_verticies_2[vert_idx][0]
+        dy = bounding_box_verticies_2[next_vert_idx][1] - bounding_box_verticies_2[vert_idx][1]
+        edges.append([dx,dy,2,vert_idx])
 
-    # Follows planar case algorithm in https://en.wikipedia.org/wiki/Minkowski_addition
-    for idx in range(len(polar_coordinate_pair_array)):
-        array_identifier, polar_coordinate_pair = polar_coordinate_pair_array[idx]
-        if array_identifier[0] == 1:
-            vertex_index = array_identifier[1]+1
-            if(vertex_index>=len(polar_coordinate_pair_1)):
-                vertex_index = 0
-            next_coordinate_pair = polar_coordinate_pair_1[vertex_index]
-            dx,dy = (next_coordinate_pair[0][0] - polar_coordinate_pair[0][0], next_coordinate_pair[0][1] - polar_coordinate_pair[0][1])
-            current_coordinate = (current_coordinate[0]+dx, current_coordinate[1]+dy)
-            minkowski_sum_vertex_array.append(current_coordinate)
-        if array_identifier[0] == 2:
-            vertex_index = array_identifier[1]+1
-            if(vertex_index>=len(polar_coordinate_pair_2)):
-                vertex_index = 0
-            next_coordinate_pair = polar_coordinate_pair_2[vertex_index]
-            dx,dy = (next_coordinate_pair[0][0] - polar_coordinate_pair[0][0], next_coordinate_pair[0][1] - polar_coordinate_pair[0][1])
-            current_coordinate = (current_coordinate[0]+dx, current_coordinate[1]+dy)
-            minkowski_sum_vertex_array.append(current_coordinate)
-    return minkowski_sum_vertex_array
+    # Sort edges by polar angle
+    edges.sort(key=lambda x:atan2(x[1],x[0]))
+
+    # Calculate Starting point
+    # Stating point is the the sum of position of starting verticies in the first two edges in the list belonging to each bbox
+    first_edge_bbox_1 = next((edge for edge in edges if edge[2] == 1), None)
+    first_edge_bbox_2 = next((edge for edge in edges if edge[2] == 2), None)
+    starting_x = bounding_box_verticies_1[first_edge_bbox_1[3]][0] + bounding_box_verticies_2[first_edge_bbox_2[3]][0]
+    starting_y = bounding_box_verticies_1[first_edge_bbox_1[3]][1] + bounding_box_verticies_2[first_edge_bbox_2[3]][1]
+
+    minkowski_sum_bbox = []
+    current_point = (starting_x, starting_y)
+    for edge in edges:
+        # Add dx and dy to current point
+        current_point = (current_point[0]+edge[0], current_point[1]+edge[1])
+        minkowski_sum_bbox.append(current_point)
+    return minkowski_sum_bbox
 
 
 def convex_hull_vertex_array_to_linear_constraint(convex_hull_array):
@@ -106,8 +101,8 @@ def two_car_predicate(k,reachability_dt,pose_data,V_pi,zeta_pi,V_omega,zeta_omeg
     angle_pi, angle_omega = predicted_headings(k,reachability_dt,pose_data,V_pi,zeta_pi,V_omega,zeta_omega)
     car_pi = car_bounding_box_verticies(constants.PI_CAR_WIDTH, constants.PI_CAR_LENGTH, angle_pi)
     car_omega = car_bounding_box_verticies(constants.OMEGA_CAR_WIDTH, constants.OMEGA_CAR_LENGTH, angle_omega)
-    minkowski_sum = minkowski_sum_2d_convex_hull(car_pi,car_omega)
-    C_s,d_s = convex_hull_vertex_array_to_linear_constraint(minkowski_sum)
+    minkowski_difference = minkowski_difference_2d_convex_hull(car_pi,car_omega)
+    C_s,d_s = convex_hull_vertex_array_to_linear_constraint(minkowski_difference)
     C = np.hstack([C_s, np.zeros((C_s.shape[0],2)),-1*C_s,np.zeros((C_s.shape[0],2))])
     d=d_s   
     return C,d

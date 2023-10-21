@@ -94,22 +94,23 @@ def pose_callback(pose_data):
         if len(global_pose_time_history)>0:
             sensor_pose_time = global_pose_time_history[0]+0.01
     car_reference_frame_pose_data = transform_perception_input.translate_pose_data(sensor_pose_data)
-    sensor_global_variable_lock.acquire()
-    if(len(sensor_pose_data) == 0):
-        global_pose_history.insert(0,[])
-        global_actuation_history.insert(0,recieved_control_from_sensor)
-        global_pose_time_history.insert(0,sensor_pose_time)
-        # global_probability_collision_history.clear()
-    else:
-        while(len(global_pose_history)>0 and abs(global_pose_time_history[len(global_pose_time_history)-1]-sensor_pose_time)>MAX_TIME_TO_TRACK_POSE):
-            global_pose_time_history.pop()
-            global_pose_history.pop()
-            global_actuation_history.pop()
-        global_pose_history.insert(0,car_reference_frame_pose_data)
-        global_actuation_history.insert(0,recieved_control_from_sensor)
-        global_pose_time_history.insert(0,sensor_pose_time)
-    last_logged_time = sensor_pose_time
-    sensor_global_variable_lock.release()
+    if not(recieved_control_from_sensor == None):
+        sensor_global_variable_lock.acquire()
+        if(len(sensor_pose_data) == 0):
+            global_pose_history.insert(0,[])
+            global_actuation_history.insert(0,recieved_control_from_sensor)
+            global_pose_time_history.insert(0,sensor_pose_time)
+            # global_probability_collision_history.clear()
+        else:
+            while(len(global_pose_history)>0 and abs(global_pose_time_history[len(global_pose_time_history)-1]-sensor_pose_time)>MAX_TIME_TO_TRACK_POSE):
+                global_pose_time_history.pop()
+                global_pose_history.pop()
+                global_actuation_history.pop()
+            global_pose_history.insert(0,car_reference_frame_pose_data)
+            global_actuation_history.insert(0,recieved_control_from_sensor)
+            global_pose_time_history.insert(0,sensor_pose_time)
+        last_logged_time = sensor_pose_time
+        sensor_global_variable_lock.release()
     
 # ODOM CALLBACK TAKEN FROM collision_verification_ros_node.py
 def odom_callback(odom_data):
@@ -127,10 +128,10 @@ def process_reachability_step_thread():
         copy_actuation_history = copy.deepcopy(global_actuation_history)
         copy_pose_time_history = copy.deepcopy(global_pose_time_history)
         sensor_global_variable_lock.release()
+        probabilities_of_collision = [[0]]*constants.K_STEPS
 
         if len(copy_pose_history)>2 and len(copy_pose_time_history)>0:
             current_time = copy_pose_time_history[0]
-            probabilities_of_collision = [0]*constants.K_STEPS
             if len(copy_pose_history[0]) > 1:
                 X_0,sigma_0,U_0 = initial_state.initial_state(copy_pose_history,copy_actuation_history,copy_pose_time_history)
                 inputs = [[1,k,constants.REACHABILITY_DT,constants.MODEL_SUBTIME_STEPS,X_0,sigma_0,U_0] for k in range(constants.K_STEPS)] 
@@ -178,8 +179,13 @@ def animate(i):
         # DISPLAY PROBABILITY OF COLLISION
         for future_timestep_idx in range(len(probability_collision_history[0][1])):
             x = [(item[0]-probability_collision_history[0][0]) /constants.REACHABILITY_DT for item in probability_collision_history]
-            y = [item[1][future_timestep_idx] for item in probability_collision_history]
-
+            y = [item[1][future_timestep_idx][0] for item in probability_collision_history]
+            # for val in x:
+            #     if isinstance(val,list) or not(isinstance(val,float)):
+            #         breakpoint()
+            # for val in y:
+            #     if isinstance(val,list) or not(isinstance(val,float)):
+            #         breakpoint()
             color_to_display = COLORS[future_timestep_idx]
             global_subplot.plot(x,y,color=color_to_display,label=str(future_timestep_idx+1)+" future time steps")
         if COLLISION_TIME > 0:
