@@ -25,7 +25,7 @@ COLOR_MAP = {"blue":[0,0,255/255],"red":[255/255,0,0],"green":[0,127/255,0],"yel
 if __name__ == "__main__":
     DENSITY = 40
     # Extend to 10
-    constants.K_STEPS = constants.K_STEPS
+    constants.K_STEPS = constants.K_STEPS 
     # Balance density
     constants.K_STEPS = constants.K_STEPS * DENSITY
     constants.REACHABILITY_DT = constants.REACHABILITY_DT / DENSITY

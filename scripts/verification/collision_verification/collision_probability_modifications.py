@@ -24,6 +24,7 @@ def breaking_example_probstars(k,reachability_start_idx,reachability_dt,model_su
 			A = model_reachability.two_car_A(V_pi,zeta_pi,V_omega,zeta_omega,model_dt)
 			c = np.matmul(A, c)
 			V = np.matmul(A, V)
+			V_pi = max(0,V_pi - breaking_acceleration_constant * model_dt)
 
 	# Assemble probstars k = reachability_start_idx to k = k_max
 	for reachability_timestep_idx in range(k):

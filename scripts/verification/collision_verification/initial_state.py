@@ -22,7 +22,7 @@ def initial_state(prefiltered_pose_history,prefiltered_actuation_history, prefil
     mu_zeta_omega,sigma_zeta_omega = 0,0
     mu_V_omega, sigma_V_omega = 0,0
     actuation_history = [[item[0], min(constants.MAX_CAR_STEERING_ANGLE,max(-constants.MAX_CAR_STEERING_ANGLE,item[1])) ] for item in prefiltered_actuation_history[:20]]
-    if len(pose_history)>1:
+    if len(pose_history)>1 and len(pose_history[0])>0:
         mu_zeta_omega,sigma_zeta_omega,mu_V_omega = estimate_omega_velocity_steering_2_points_with_angle(pose_history, actuation_history, pose_time_history)
     # if "-1" in pose_history and "-2" in pose_history and not SOLVE_USING_ANGLE_DTHETA:
     #     mu_zeta_omega,sigma_zeta_omega,mu_V_omega = estimate_omega_velocity_steering_3(pose_history, actuation_history, pose_dt_history)
@@ -31,30 +31,40 @@ def initial_state(prefiltered_pose_history,prefiltered_actuation_history, prefil
     # print(f"Algo V:{round(mu_V_omega,3)}")
     V_pi = actuation_history[0][0]
     zeta_pi = actuation_history[0][1]
-    dist_theta_i = [pose_history[0][2],pose_history[0][6]]
-    dist_theta_j = [pose_history[0][3],pose_history[0][7]]
 
-    dist_theta_omega = theta_distiribution(dist_theta_i,dist_theta_j)
-    mu_theta_omega = dist_theta_omega[0]
-    sigma_theta_omega = dist_theta_omega[1]
-    
     pi_inputs = [[zeta_pi,constants.PI_AVERAGE_STEERING_ANGLE_ERROR]]
     mu_varphi_x_pi,sigma_varphi_x_pi = approximate_function_distribution(pi_varphi_x_calculation,pi_inputs)
     mu_varphi_y_pi,sigma_varphi_y_pi = approximate_function_distribution(pi_varphi_y_calculation,pi_inputs)
+    mu_varphi_x_omega,sigma_varphi_x_omega = 0,0
+    mu_varphi_y_omega,sigma_varphi_y_omega = 1,0
+    if len(pose_history)>0 and len(pose_history[0])>0:
+        dist_theta_i = [pose_history[0][2],pose_history[0][6]]
+        dist_theta_j = [pose_history[0][3],pose_history[0][7]]
 
-    omega_inputs = [[mu_theta_omega,sigma_theta_omega],[mu_zeta_omega,sigma_zeta_omega]]
-    mu_varphi_x_omega,sigma_varphi_x_omega = approximate_function_distribution(omega_varphi_x_calculation,omega_inputs)
-    mu_varphi_y_omega,sigma_varphi_y_omega = approximate_function_distribution(omega_varphi_y_calculation,omega_inputs)
-    
+        dist_theta_omega = theta_distiribution(dist_theta_i,dist_theta_j)
+        mu_theta_omega = dist_theta_omega[0]
+        sigma_theta_omega = dist_theta_omega[1]
+
+        omega_inputs = [[mu_theta_omega,sigma_theta_omega],[mu_zeta_omega,sigma_zeta_omega]]
+        mu_varphi_x_omega,sigma_varphi_x_omega = approximate_function_distribution(omega_varphi_x_calculation,omega_inputs)
+        mu_varphi_y_omega,sigma_varphi_y_omega = approximate_function_distribution(omega_varphi_y_calculation,omega_inputs)
+        
     mu_x_pi = 0
     mu_y_pi = 0
-    mu_x_omega = pose_history[0][0]
-    mu_y_omega = pose_history[0][1]
+    mu_x_omega = 0
+    mu_y_omega = 0
+
+    if len(pose_history)>0 and len(pose_history[0])>0:
+        mu_x_omega = pose_history[0][0]
+        mu_y_omega = pose_history[0][1]
     
     sigma_x_pi = 0
     sigma_y_pi = 0
-    sigma_x_omega = pose_history[0][4]
-    sigma_y_omega = pose_history[0][5]
+    sigma_x_omega = 0
+    sigma_y_omega = 0
+    if len(pose_history)>0 and len(pose_history[0])>0:
+        sigma_x_omega = pose_history[0][4]
+        sigma_y_omega = pose_history[0][5]
     
     X_0 = np.array([mu_x_pi,mu_y_pi,mu_varphi_x_pi,mu_varphi_y_pi,mu_x_omega,mu_y_omega,mu_varphi_x_omega,mu_varphi_y_omega])
     sigma_0 = np.array([sigma_x_pi,sigma_y_pi,sigma_varphi_x_pi,sigma_varphi_y_pi,sigma_x_omega,sigma_y_omega,sigma_varphi_x_omega,sigma_varphi_y_omega])

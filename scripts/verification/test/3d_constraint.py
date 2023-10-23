@@ -28,11 +28,12 @@ import matplotlib.cm as cm
 # COLOR_MAP = {"blue":[0,0,255/255],"red":[255/255,0,0],"green":[0,127/255,0],"yellow":[255/255,255/255,0],"purple":[127/255,0,127/255]}
 
 if __name__ == "__main__":
+    constants.K_STEPS = constants.K_STEPS * 2
     fig = plt.figure()
     ax = Axes3D(fig)
     ax.view_init(20, -70)
     fig.add_axes(ax)
-    ax.set_ylim(0,5)
+    ax.set_ylim(0,constants.K_STEPS)
     ax.set_xlim(-0.6,0.6)
     ax.set_zlim(-0.6,0.6)
     ax.set_xlabel("$X_{\omega} - X_{\pi}$ (meters)")
@@ -41,7 +42,8 @@ if __name__ == "__main__":
     lines_to_plot = []
     for i in range(constants.K_STEPS):
         lines_to_plot.append([[],[],[]])
-    with open('saved_data/old_video/frame_history_'+str(5)+'.pkl', 'rb') as f:
+    # Was old video 5 frame 150
+    with open('saved_data/new_video/frame_history_'+str(1)+'.pkl', 'rb') as f:
         history = pickle.load(f)
         frame_data =  history[150] #history[20] # 150 for 
         pose_history = frame_data[1][0]

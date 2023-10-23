@@ -67,6 +67,7 @@ def image_callback(new_image):
             col_lower = int(cv_image.shape[1]/2 - constants.camera_pixel_width / 2)
             col_upper = int(cv_image.shape[1]/2 + constants.camera_pixel_width / 2)
             cv_image = cv_image[row_lower:row_upper,col_lower:col_upper,...]
+            
         # For YOLO
         resized_yolo_image = cv.resize(cv_image,(constants.yolo_width_of_image,constants.yolo_height_of_image))
         yolo_tensor = torch.from_numpy(resized_yolo_image).to(device).unsqueeze(0).permute(0,3,1,2).to(torch.float).mul(1/256)
