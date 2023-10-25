@@ -23,6 +23,13 @@ import pypoman
 import math
 import matplotlib.cm as cm
 
+font = {'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 16}
+
+matplotlib.rc('font', **font)
+
+
 # COLORS = ["blue","red","green","yellow","purple"]
 # COLOR_CONSTANT = 1
 # COLOR_MAP = {"blue":[0,0,255/255],"red":[255/255,0,0],"green":[0,127/255,0],"yellow":[255/255,255/255,0],"purple":[127/255,0,127/255]}
@@ -36,9 +43,19 @@ if __name__ == "__main__":
     ax.set_ylim(0,constants.K_STEPS)
     ax.set_xlim(-0.6,0.6)
     ax.set_zlim(-0.6,0.6)
-    ax.set_xlabel("$X_{\omega} - X_{\pi}$ (meters)")
-    ax.set_zlabel("$Y_{\omega} - Y_{\pi}$ (meters)")
-    ax.set_ylabel("Future Time Steps")
+    padding = 8
+    ax.xaxis.labelpad=padding
+    ax.yaxis.labelpad=padding
+    ax.zaxis.labelpad=padding
+    ax.set_xlabel("$X_{\omega} - X_{\pi}$ (meters)",fontdict={'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 16})
+    ax.set_zlabel("$Y_{\omega} - Y_{\pi}$ (meters)",fontdict={'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 16})
+    ax.set_ylabel("Future Time Steps",fontdict={'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 16})
     lines_to_plot = []
     for i in range(constants.K_STEPS):
         lines_to_plot.append([[],[],[]])

@@ -18,11 +18,11 @@ import time
 import copy
 import matplotlib.cm as cm
 
-# font = {'family' : 'normal',
-#         'weight' : 'bold',
-#         'size'   : 16}
+font = {'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 16}
 
-# matplotlib.rc('font', **font)
+matplotlib.rc('font', **font)
 
 if __name__ == "__main__":
     # First Clip Tim
@@ -53,12 +53,21 @@ if __name__ == "__main__":
 
         fig = plt.figure()
         ax = Axes3D(fig)
-        ax.view_init(30, -105) # 30 95
+        ax.view_init(20, -120) # 30 95
         # ax.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
-        # ax.zaxis.labelpad=15
-        ax.set_xlabel("Timesteps Elasped",)
-        ax.set_ylabel("Timesteps to Collision",)
-        ax.set_zlabel("Probability of Collision")
+        padding = 8
+        ax.xaxis.labelpad=padding
+        ax.yaxis.labelpad=padding
+        ax.zaxis.labelpad=padding
+        ax.set_xlabel("Timesteps Elasped",fontdict={'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 16})
+        ax.set_ylabel("Timesteps to Collision",fontdict={'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 16})
+        ax.set_zlabel("Probability of Collision",fontdict={'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 16})
         # fontdict={'family' : 'normal',
         # 'weight' : 'bold',
         # 'size'   : 17}
