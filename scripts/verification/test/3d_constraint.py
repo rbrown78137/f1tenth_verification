@@ -30,15 +30,17 @@ font = {'family' : 'normal',
 matplotlib.rc('font', **font)
 
 
-# COLORS = ["blue","red","green","yellow","purple"]
-# COLOR_CONSTANT = 1
-# COLOR_MAP = {"blue":[0,0,255/255],"red":[255/255,0,0],"green":[0,127/255,0],"yellow":[255/255,255/255,0],"purple":[127/255,0,127/255]}
+COLORS = ["blue","red","green","yellow","purple"]
+COLOR_CONSTANT = 1
+COLOR_MAP = {"blue":[0,0,255/255],"red":[255/255,0,0],"green":[0,127/255,0],"yellow":[255/255,165/255,0],"purple":[127/255,0,127/255]}
 
 if __name__ == "__main__":
-    constants.K_STEPS = constants.K_STEPS * 2
+    index_of_interest = 160
+    constants.K_STEPS = constants.K_STEPS
     fig = plt.figure()
     ax = Axes3D(fig)
-    ax.view_init(20, -70)
+    (15,120)
+    ax.view_init(17, -125)
     fig.add_axes(ax)
     ax.set_ylim(0,constants.K_STEPS)
     ax.set_xlim(-0.6,0.6)
@@ -56,13 +58,17 @@ if __name__ == "__main__":
     ax.set_ylabel("Future Time Steps",fontdict={'family' : 'normal',
         'weight' : 'bold',
         'size'   : 16})
+    test = np.arange(-0.6, 0.6, 0.3)
+    ax.set_xticks(np.arange(-0.6, 0.61, 0.3))
+    ax.set_zticks(np.arange(-0.6, 0.61, 0.3))
+    # plt.xticks(np.arange(min(x), max(x)+1, 1.0))
     lines_to_plot = []
     for i in range(constants.K_STEPS):
         lines_to_plot.append([[],[],[]])
     # Was old video 5 frame 150
-    with open('saved_data/new_video/frame_history_'+str(1)+'.pkl', 'rb') as f:
+    with open('saved_data/new_video/frame_history_'+str(7)+'.pkl', 'rb') as f:
         history = pickle.load(f)
-        frame_data =  history[150] #history[20] # 150 for 
+        frame_data =  history[index_of_interest] #history[20] # 150 for 
         pose_history = frame_data[1][0]
         actuation_history = frame_data[1][1]
         pose_time_history = frame_data[1][2]
@@ -99,7 +105,8 @@ if __name__ == "__main__":
                     
                     colormap = cm.get_cmap('tab10')
 
-                    poly.set_color(colormap(predicate_idx / constants.K_STEPS))
+                    # poly.set_color(colormap(predicate_idx / constants.K_STEPS))
+                    poly.set_color(COLOR_MAP[COLORS[predicate_idx]])
                     ax.add_collection3d(poly)
 
         plt.show()

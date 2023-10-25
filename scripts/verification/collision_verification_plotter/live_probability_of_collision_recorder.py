@@ -28,7 +28,7 @@ matplotlib.rc('font', **font)
 # Collision Time
 COLLISION_TIME = -1
 if constants.RECORDING_NUMBER ==1:
-    COLLISION_TIME = 1682487988.4
+    COLLISION_TIME = 1682487988.45
 
 # ROS TOPICS
 pose_topic = "/pose_data"
@@ -72,12 +72,12 @@ global_probability_collision_history = []
 # DATA TO RECORD FOR OTHER FILES AND DENSITY PLOT RECORDER
 frame_sensor_data = []
 def sigint_handler(arg1,arg2):
-    fast_pool.shutdown()
-    rospy.signal_shutdown(reason="Program Terminated")
     global global_video_writer
     global_video_writer.release()
     with open('saved_data/frame_history.pkl', 'wb') as f:
         pickle.dump(frame_sensor_data, f)
+    fast_pool.shutdown()
+    rospy.signal_shutdown(reason="Program Terminated")
     print("Ending Program and Saving Probability data to file.")
     exit(0)
 

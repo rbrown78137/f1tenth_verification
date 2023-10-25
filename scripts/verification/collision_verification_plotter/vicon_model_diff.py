@@ -40,7 +40,7 @@ if __name__ == "__main__":
     with open('saved_data/ground_truth_pose.pkl','rb') as f:
         ground_truth_data = pickle.load(f)
 
-    with open('saved_data/old_video/frame_history_3.pkl','rb') as f:
+    with open('saved_data/new_video/frame_history_3.pkl','rb') as f:
         prediction_data = pickle.load(f)
 
     x_error = []
@@ -51,46 +51,45 @@ if __name__ == "__main__":
     velocity_error = []
     steering_angle_error = []
     gt_steering_angle = []
-
-    for i in range(100):
-        idx_of_interest = i + 100
+    for i in range(0,len(prediction_data)-1):
+        idx_of_interest = i
         time_of_prediction = prediction_data[idx_of_interest][0] + CLIP_TIME_DIFF
 
         pose_history = prediction_data[idx_of_interest][1][0]
         X_0, sigma_0, U_0 = initial_state.initial_state(prediction_data[idx_of_interest][1][0],prediction_data[idx_of_interest][1][1],prediction_data[idx_of_interest][1][2])
-        
-        predicted_angle = math.atan2(pose_history[0][3],pose_history[0][2])
-        predicted_x = X_0[4]
-        predicted_y = X_0[5]
-        predicted_varphi_x = X_0[6]
-        predicted_varphi_y = X_0[7]
-        predicted_velocity = U_0[2]
-        predicted_steering_angle = U_0[3]
+        if len(pose_history[0])>0:
+            predicted_angle = math.atan2(pose_history[0][3],pose_history[0][2])
+            predicted_x = X_0[4]
+            predicted_y = X_0[5]
+            predicted_varphi_x = X_0[6]
+            predicted_varphi_y = X_0[7]
+            predicted_velocity = U_0[2]
+            predicted_steering_angle = U_0[3]
 
-        gt_time_idx_pairs = [(abs(ground_truth_data[idx][0]-time_of_prediction),idx) for idx in range(len(ground_truth_data))]
-        gt_time_idx_pairs.sort(key=lambda x: x[0])
+            gt_time_idx_pairs = [(abs(ground_truth_data[idx][0]-time_of_prediction),idx) for idx in range(len(ground_truth_data))]
+            gt_time_idx_pairs.sort(key=lambda x: x[0])
 
-        corresponding_gt_data = ground_truth_data[gt_time_idx_pairs[0][1]]
-        gt_time_idx_pairs[0][1]
+            corresponding_gt_data = ground_truth_data[gt_time_idx_pairs[0][1]]
+            gt_time_idx_pairs[0][1]
 
-        x_ground_truth = corresponding_gt_data[1]
-        y_ground_truth = corresponding_gt_data[2]
-        theta_ground_truth = corresponding_gt_data[3] + math.pi/2 - 2*math.pi
-        varphi_x_ground_truth = math.cos(theta_ground_truth)
-        varphi_y_ground_truth = math.sin(theta_ground_truth)
-        steering_angle_ground_truth = 0
-        velocity_ground_truth = get_veloctiy_estimate(ground_truth_data,gt_time_idx_pairs[0][1])
+            x_ground_truth = corresponding_gt_data[1]
+            y_ground_truth = corresponding_gt_data[2]
+            theta_ground_truth = corresponding_gt_data[3] + math.pi/2 - 2*math.pi
+            varphi_x_ground_truth = math.cos(theta_ground_truth)
+            varphi_y_ground_truth = math.sin(theta_ground_truth)
+            steering_angle_ground_truth = 0
+            velocity_ground_truth = get_veloctiy_estimate(ground_truth_data,gt_time_idx_pairs[0][1])
 
-        x_error.append(abs(x_ground_truth-predicted_x))
-        y_error.append(abs(y_ground_truth-predicted_y))
-        theta_error.append(abs(theta_ground_truth-predicted_angle))
-        varphi_x_error.append(abs(varphi_x_ground_truth-predicted_varphi_x))
-        varphi_y_error.append(abs(varphi_y_ground_truth-predicted_varphi_y))
-        steering_angle_error.append(abs(steering_angle_ground_truth-predicted_steering_angle))
-        velocity_error.append(abs(velocity_ground_truth-predicted_velocity))
+            x_error.append(abs(x_ground_truth-predicted_x))
+            y_error.append(abs(y_ground_truth-predicted_y))
+            theta_error.append(abs(theta_ground_truth-predicted_angle))
+            varphi_x_error.append(abs(varphi_x_ground_truth-predicted_varphi_x))
+            varphi_y_error.append(abs(varphi_y_ground_truth-predicted_varphi_y))
+            steering_angle_error.append(abs(steering_angle_ground_truth-predicted_steering_angle))
+            velocity_error.append(abs(velocity_ground_truth-predicted_velocity))
 
     print(f"X Error: {mean(x_error)}")
-    print(f"X Error: {mean(y_error)}")
+    print(f"Y Error: {mean(y_error)}")
     print(f"Theta Error: {mean(theta_error)}")
     print(f"varphi_x Error: {mean(varphi_x_error)}")
     print(f"varphi_y Error: {mean(varphi_y_error)}")

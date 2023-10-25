@@ -17,6 +17,6 @@ MODEL_SUBTIME_STEPS = 10
 K_STEPS = 5
 
 # Variable To adjust odometry and perception input 
-RECORDING_NUMBER = 1
+RECORDING_NUMBER = 3
 
 LOG_TIMING_INFO = False

@@ -89,10 +89,10 @@ def image_callback(data,args):
             # print(f"Global angle: {global_angle}\n")
             new_pose_info[...,2:3] = math.cos(global_angle) 
             new_pose_info[...,3:4] = math.sin(global_angle)
-            x_uncertainty = math.cos(global_angle) * new_pose_info[...,4:5] - math.sin(global_angle) * new_pose_info[...,5:6]
-            y_uncertainty = math.sin(global_angle) * new_pose_info[...,4:5] + math.cos(global_angle) * new_pose_info[...,5:6]
-            new_pose_info[...,4:5] = abs(x_uncertainty)
-            new_pose_info[...,5:6] = abs(y_uncertainty)
+            new_pose_info[...,6:7] = math.cos(global_angle) * new_pose_info[...,6:7] - math.sin(global_angle) * new_pose_info[...,7:8]
+            new_pose_info[...,7:8] = math.sin(global_angle) * new_pose_info[...,6:7] + math.cos(global_angle) * new_pose_info[...,7:8]
+            new_pose_info[...,4:5] = abs(new_pose_info[...,4:5])
+            new_pose_info[...,5:6] = abs( new_pose_info[...,5:6])
             pose_data = np.concatenate([pose_data,new_pose_info],axis=0)
             # print("Pose Time: "+str(pose_end_time - pose_start_time))
         if len(final_bboxes) > 0:

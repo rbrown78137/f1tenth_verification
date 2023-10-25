@@ -24,19 +24,23 @@ font = {'family' : 'normal',
 
 matplotlib.rc('font', **font)
 
+COLORS = ["blue","red","green","yellow","purple"]
+COLOR_CONSTANT = 1
+COLOR_MAP = {"blue":[0,0,255/255],"red":[255/255,0,0],"green":[0,127/255,0],"yellow":[255/255,165/255,0],"purple":[127/255,0,127/255]}
+
 if __name__ == "__main__":
     # First Clip Tim
-    constants.K_STEPS = constants.K_STEPS  * 2 
+    constants.K_STEPS = constants.K_STEPS
     constants.REACHABILITY_DT = constants.REACHABILITY_DT 
     multiprocessing_cores = 16
     pool = FastPool(multiprocessing_cores)
     lines_to_plot = []
     # index_of_interest = 220
     # index_of_interest = 280
-    index_of_interest = 1000
+    index_of_interest = 310#[160,310,350]
     for i in range(constants.K_STEPS):
         lines_to_plot.append([[],[],[]])
-    with open('saved_data/new_video/frame_history_'+str(1)+'.pkl', 'rb') as f:
+    with open('saved_data/new_video/frame_history_'+str(7)+'.pkl', 'rb') as f:
         history = pickle.load(f)
         for i,frame_data in enumerate(history):
             if i<index_of_interest:
@@ -65,9 +69,12 @@ if __name__ == "__main__":
         ax.set_ylabel("Timesteps to Collision",fontdict={'family' : 'normal',
         'weight' : 'bold',
         'size'   : 16})
+        ax.set_yticks(np.arange(0, 5.5, 1))
         ax.set_zlabel("Probability of Collision",fontdict={'family' : 'normal',
         'weight' : 'bold',
         'size'   : 16})
+        ax.set_zticks(np.arange(0, 1.1, 0.2))
+        ax.set_zlim(0,1.01)
         # fontdict={'family' : 'normal',
         # 'weight' : 'bold',
         # 'size'   : 17}
@@ -83,8 +90,8 @@ if __name__ == "__main__":
             ttcs = lines_to_plot[index][1]
             probs = lines_to_plot[index][2]
             colormap = cm.get_cmap('tab10')
-
-            ax.plot3D(timesteps, ttcs, probs, color=colormap(index / constants.K_STEPS)) 
+            ax.plot3D(timesteps, ttcs, probs, color=COLOR_MAP[COLORS[index]]) 
+            # ax.plot3D(timesteps, ttcs, probs, color=colormap(index / constants.K_STEPS)) 
 
         plt.show()
         debug_var = 0

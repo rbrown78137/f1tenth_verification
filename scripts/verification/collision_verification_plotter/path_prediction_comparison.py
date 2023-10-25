@@ -30,7 +30,7 @@ if __name__ == "__main__":
     with open('saved_data/ground_truth_pose.pkl','rb') as f:
         ground_truth_data = pickle.load(f)
 
-    with open('saved_data/old_video/frame_history_3.pkl','rb') as f:
+    with open('saved_data/new_video/frame_history_3.pkl','rb') as f:
         prediction_data = pickle.load(f)
 
     ground_truth_x_positions = []
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     predicted_x_positions = []
     predicted_y_positions = []
 
-    idx_of_interest = 180 # Was 160
+    idx_of_interest = 440 # Was 160
     time_of_prediction = prediction_data[idx_of_interest][0] + CLIP_TIME_DIFF
 
     X_0, sigma_0, U_0 = initial_state.initial_state(prediction_data[idx_of_interest][1][0],prediction_data[idx_of_interest][1][1],prediction_data[idx_of_interest][1][2])
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     ax.set_xlabel("X (meters)",fontdict={'family' : 'normal',
         'weight' : 'bold',
         'size'   : 17})
-    ax.set_ylim(0.4,1.8)
+    ax.set_ylim(0,1.8)
     ax.set_xlim(-0.6,-0.3)
     # fig.canvas.draw()
     plt.plot()

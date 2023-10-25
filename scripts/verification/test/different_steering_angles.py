@@ -34,7 +34,7 @@ if __name__ == "__main__":
     multiprocessing_cores = 16
     pool = FastPool(multiprocessing_cores)
     lines_to_plot = []
-    index_of_interest = 1000
+    index_of_interest = 350
     # index_of_interest = 280
     for i in range(len(steering_angle_modifications)):
         lines_to_plot.append([[],[],[]])
