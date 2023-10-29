@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
         fig = plt.figure()
         ax = Axes3D(fig)
-        ax.view_init(20, 60) # 30 95
+        ax.view_init(20, 60+180) # 30 95
         ax.invert_yaxis()
         # ax.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
         # ax.zaxis.labelpad=15

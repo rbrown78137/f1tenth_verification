@@ -39,7 +39,7 @@ if __name__ == "__main__":
     predicted_x_positions = []
     predicted_y_positions = []
 
-    idx_of_interest = 440 # Was 160
+    idx_of_interest = 440
     time_of_prediction = prediction_data[idx_of_interest][0] + CLIP_TIME_DIFF
 
     X_0, sigma_0, U_0 = initial_state.initial_state(prediction_data[idx_of_interest][1][0],prediction_data[idx_of_interest][1][1],prediction_data[idx_of_interest][1][2])

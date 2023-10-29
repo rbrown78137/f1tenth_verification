@@ -12,7 +12,7 @@ import verification.collision_verification.collision_verification_constants as c
 import time
 import copy
 
-CALCULATE_DENSITY = True
+CALCULATE_DENSITY = False
 
 VIEW_X_MIN = 0 
 VIEW_X_MAX = 0 
@@ -346,12 +346,13 @@ def get_VIEW(idx):
 
 
 if __name__ == "__main__":
-    for i in range(7,8):
+    for i in range(1,2):
         get_VIEW(i)
         with open('saved_data/new_video/frame_history_'+str(i)+'.pkl', 'rb') as f:
             history = pickle.load(f)
             for frame_idx,frame_data in enumerate(history):
-                key_frames = [160,310,350]
+                key_frames = [170]
+                # key_frames = [160,310,350]
                 # Key frames From Videos 
                 # Video 1: 100, 170, 350
                 # Video 5: 
