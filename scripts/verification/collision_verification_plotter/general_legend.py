@@ -26,9 +26,10 @@ if __name__ == "__main__":
                        mlines.Line2D([0], [0], color=(0,0,0), marker='o', markersize=12, lw=0, label='Other Vehicle',markeredgecolor=(0,0,0), markerfacecolor=(1.0,1.0,1.0))
                        ]
     
-    fig.legend(handles=legend_elements)
+    fig.legend(handles=legend_elements,ncol=len(legend_elements))
     fig.tight_layout()
     plt.gca().set_axis_off()
+    
     
     # fig.canvas.draw()
     plt.show(block=True)

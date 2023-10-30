@@ -39,10 +39,10 @@ COLOR_MAP = {"blue":[0,0,255/255],"red":[255/255,0,0],"green":[0,127/255,0],"yel
 MARKER_SIZE = 10
 
 
-Y_RANGE_MIN = 0
-Y_RANGE_MAX = 3
-X_RANGE_MIN = -1
-X_RANGE_MAX = 1
+Y_RANGE_MIN = -1
+Y_RANGE_MAX = 1
+X_RANGE_MIN = 0
+X_RANGE_MAX = 3
 X_DENSITY = 10
 Y_DENSITY = 10
 
@@ -74,10 +74,10 @@ if __name__ == "__main__":
                 ax.xaxis.labelpad=padding
                 ax.yaxis.labelpad=padding
                 ax.zaxis.labelpad=padding
-                ax.set_xlabel("X (meters)",fontdict={'family' : 'normal',
+                ax.set_xlabel("Y (meters)",fontdict={'family' : 'normal',
                     'weight' : 'bold',
                     'size'   : 16})
-                ax.set_zlabel("Y (meters)",fontdict={'family' : 'normal',
+                ax.set_zlabel("X (meters)",fontdict={'family' : 'normal',
                     'weight' : 'bold',
                     'size'   : 16})
                 ax.set_ylabel("Future Time Steps",fontdict={'family' : 'normal',
@@ -120,8 +120,8 @@ if __name__ == "__main__":
                                 y_start = Y[row][col]
                                 y_end = Y[row][col] + (Y_RANGE_MAX-Y_RANGE_MIN) / Y_DENSITY
 
-                                X_0[0] = (x_start + x_end) / 2
-                                X_0[1] = (y_start + y_end) / 2
+                                X_0[1] = (x_start + x_end) / 2
+                                X_0[0] = (y_start + y_end) / 2
                                 density_map[row][col] = collision_probability.probstar_next_k_time_steps_given_initial_state(constants.K_STEPS,0,constants.REACHABILITY_DT,constants.MODEL_SUBTIME_STEPS,X_0,sigma_0,U_0,6)[future_timestep_idx].estimateProbability() 
 
                     time_step_2d_array = np.ones_like(X) * (future_timestep_idx+1)
@@ -136,21 +136,21 @@ if __name__ == "__main__":
                     surface = ax.plot_surface(X, time_step_2d_array, Y, facecolors=colors,zorder=-future_timestep_idx)
                     # Customize labels and titles as needed
                 probstars = collision_probability.probstar_next_k_time_steps_given_initial_state(constants.K_STEPS,0,constants.REACHABILITY_DT,constants.MODEL_SUBTIME_STEPS,original_X_0,sigma_0,original_U_0,6)
-                # for timestep_idx, probstar in enumerate(probstars):
-                #     x_pi = probstar.V[0][0]
-                #     y = timestep_idx+1
-                #     z_pi = probstar.V[1][0] 
-                #     x_omega = probstar.V[4][0]
-                #     z_omega = probstar.V[5][0]    
-                #     ax.plot([x_pi,x_pi],[y,y],[0,z_pi],'--',color=(0,0,0))
-                #     if draw_other_car:
-                #         ax.plot([x_omega,x_omega],[y,y],[0,z_omega],'--',color=(0,0,0))
                 for timestep_idx, probstar in enumerate(probstars):
-                    x_pi = probstar.V[0][0]
+                    x_pi = probstar.V[1][0]
+                    y = timestep_idx+1
+                    z_pi = probstar.V[0][0] 
+                    x_omega = probstar.V[5][0]
+                    z_omega = probstar.V[4][0]    
+                    ax.plot([x_pi,x_pi],[y,y],[-1,z_pi],'--',color=(0,0,0))
+                    if draw_other_car:
+                        ax.plot([x_omega,x_omega],[y,y],[-1,z_omega],'--',color=(0,0,0))
+                for timestep_idx, probstar in enumerate(probstars):
+                    x_pi = probstar.V[1][0]
                     z = timestep_idx+1
-                    y_pi = probstar.V[1][0] 
-                    x_omega = probstar.V[4][0]
-                    y_omega = probstar.V[5][0]    
+                    y_pi = probstar.V[0][0] 
+                    x_omega = probstar.V[5][0]
+                    y_omega = probstar.V[4][0]    
                     ax.plot([x_pi],[z],[y_pi], marker="s", markersize=MARKER_SIZE, markeredgecolor=(0,0,0), markerfacecolor=(1.0,1.0,1.0))
                     if draw_other_car:
                         ax.plot([x_omega],[z],[y_omega], marker="o", markersize=MARKER_SIZE, markeredgecolor=(0,0,0), markerfacecolor=(1.0,1.0,1.0))

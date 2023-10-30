@@ -18,11 +18,11 @@ import time
 import copy
 import matplotlib.cm as cm
 import math
-# font = {'family' : 'normal',
-#         'weight' : 'bold',
-#         'size'   : 16}
+font = {'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 16}
 
-# matplotlib.rc('font', **font)
+matplotlib.rc('font', **font)
 
 steering_angle_modifications = [-0.174533, -0.1309, -0.0872665, -0.0436332, 0]
 steering_angle_modification_labels = ["-10\u00b0","-7.5\u00b0", "-5\u00b0", "-2.5\u00b0", "No Change\u00b0"]
@@ -60,10 +60,20 @@ if __name__ == "__main__":
         ax.view_init(20, 60+180) # 30 95
         # ax.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
         # ax.zaxis.labelpad=15
-        ax.set_xlabel("Timesteps Elasped",)
-        ax.set_ylabel("Steering Angle Adjustment (Degrees)")
+        padding = 8
+        ax.xaxis.labelpad=padding
+        ax.yaxis.labelpad=padding*2
+        ax.zaxis.labelpad=padding
+        ax.set_xlabel("Timesteps Elasped",fontdict={'family' : 'normal',
+                    'weight' : 'bold',
+                    'size'   : 16})
+        ax.set_ylabel("Steering Adjustment\n (Degrees)",fontdict={'family' : 'normal',
+                    'weight' : 'bold',
+                    'size'   : 16})
         ax.invert_yaxis()
-        ax.set_zlabel("Probability of Collision")
+        ax.set_zlabel("Probability of Collision",fontdict={'family' : 'normal',
+                    'weight' : 'bold',
+                    'size'   : 16})
         # fontdict={'family' : 'normal',
         # 'weight' : 'bold',
         # 'size'   : 17}

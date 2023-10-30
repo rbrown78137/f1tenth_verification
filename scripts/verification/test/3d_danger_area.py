@@ -80,7 +80,7 @@ if __name__ == "__main__":
                 ax.set_zlabel("Y (meters)",fontdict={'family' : 'normal',
                     'weight' : 'bold',
                     'size'   : 16})
-                ax.set_ylabel("Future Time Steps",fontdict={'family' : 'normal',
+                ax.set_ylabel("Timesteps to Collision",fontdict={'family' : 'normal',
                     'weight' : 'bold',
                     'size'   : 16})
                 # legend_elements = [

@@ -12,7 +12,7 @@ import verification.collision_verification.collision_verification_constants as c
 import time
 import copy
 
-CALCULATE_DENSITY = False
+CALCULATE_DENSITY = True
 
 VIEW_X_MIN = 0 
 VIEW_X_MAX = 0 
@@ -247,8 +247,8 @@ def get_graph_instance(pose_history,actuation_history,pose_time_history,reachabi
                        mlines.Line2D([0], [0], color=(0,0,0), marker='s', markersize=12, lw=0, label='Ego Vehicle',markeredgecolor=(0,0,0), markerfacecolor=(1.0,1.0,1.0)),
                        mlines.Line2D([0], [0], color=(0,0,0), marker='o', markersize=12, lw=0, label='Other Vehicle',markeredgecolor=(0,0,0), markerfacecolor=(1.0,1.0,1.0))
                        ]
-    ax.legend(handles=legend_elements,loc="upper right")
-    fig.set_figheight(6)
+    # ax.legend(handles=legend_elements,loc="upper right")
+    fig.set_figheight(5)
     fig.set_figwidth(6)
     # Display the image
     ax.imshow(final_image,aspect='auto',extent=(VIEW_X_MIN,VIEW_X_MAX,VIEW_Y_MIN,VIEW_Y_MAX))
@@ -263,8 +263,8 @@ def get_graph_instance(pose_history,actuation_history,pose_time_history,reachabi
         'weight' : 'bold',
         'size'   : 17})
     fig.subplots_adjust(
-        top=0.95,
-        bottom=0.11,
+        top=0.935,
+        bottom=0.125,
         left=0.15,
         right=0.95,
         hspace=0.2,
@@ -330,7 +330,7 @@ def get_VIEW(idx):
         VIEW_X_MIN = -0.2
         VIEW_X_MAX = 1
         VIEW_Y_MIN = -0.2
-        VIEW_Y_MAX = 3
+        VIEW_Y_MAX = 2.5
 
     if idx == 8:
         VIEW_X_MIN = -0.2
@@ -346,12 +346,12 @@ def get_VIEW(idx):
 
 
 if __name__ == "__main__":
-    for i in range(1,2):
+    for i in range(7,8):
         get_VIEW(i)
         with open('saved_data/new_video/frame_history_'+str(i)+'.pkl', 'rb') as f:
             history = pickle.load(f)
             for frame_idx,frame_data in enumerate(history):
-                key_frames = [170]
+                key_frames = [350]
                 # key_frames = [160,310,350]
                 # Key frames From Videos 
                 # Video 1: 100, 170, 350

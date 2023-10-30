@@ -85,7 +85,7 @@ if __name__ == "__main__":
 
     ax.legend(handles=legend_elements,loc="upper right")
 
-    fig.set_figheight(10)
+    fig.set_figheight(7)
     fig.set_figwidth(10)
 
     ax.set_title("Ground Truth Vs Predictd Model Path",fontdict={'family' : 'normal',
@@ -97,8 +97,8 @@ if __name__ == "__main__":
     ax.set_xlabel("X (meters)",fontdict={'family' : 'normal',
         'weight' : 'bold',
         'size'   : 17})
-    ax.set_ylim(0,1.8)
-    ax.set_xlim(-0.6,-0.3)
+    ax.set_ylim(0,1.6)
+    ax.set_xlim(-0.6,-0.35)
     # fig.canvas.draw()
     plt.plot()
     plt.show(block=True)

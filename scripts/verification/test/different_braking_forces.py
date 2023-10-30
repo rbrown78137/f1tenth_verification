@@ -19,11 +19,11 @@ import time
 import copy
 import matplotlib.cm as cm
 
-# font = {'family' : 'normal',
-#         'weight' : 'bold',
-#         'size'   : 16}
+font = {'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 16}
 
-# matplotlib.rc('font', **font)
+matplotlib.rc('font', **font)
 
 # Algorithm Settings
 braking_forces = [1.6,1.2,0.8, 0.4, 0.2, 0]
@@ -67,10 +67,20 @@ if __name__ == "__main__":
         ax.view_init(20, 60+180) # 30 95
         ax.invert_yaxis()
         # ax.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
-        # ax.zaxis.labelpad=15
-        ax.set_xlabel("Timesteps Elasped",)
-        ax.set_ylabel("Braking Force (% Max Force)",)
-        ax.set_zlabel("Probability of Collision")
+        padding = 8
+        ax.xaxis.labelpad=padding
+        ax.yaxis.labelpad=padding
+        ax.zaxis.labelpad=padding
+
+        ax.set_xlabel("Timesteps Elasped",fontdict={'family' : 'normal',
+                    'weight' : 'bold',
+                    'size'   : 16})
+        ax.set_ylabel("Braking Force (% Max)",fontdict={'family' : 'normal',
+                    'weight' : 'bold',
+                    'size'   : 16})
+        ax.set_zlabel("Probability of Collision",fontdict={'family' : 'normal',
+                    'weight' : 'bold',
+                    'size'   : 16})
         # fontdict={'family' : 'normal',
         # 'weight' : 'bold',
         # 'size'   : 17}
