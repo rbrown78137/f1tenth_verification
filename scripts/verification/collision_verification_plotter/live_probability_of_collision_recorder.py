@@ -21,14 +21,14 @@ import matplotlib
 
 font = {'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 16}
+        'size'   : 13}
 
 matplotlib.rc('font', **font)
 
 # Collision Time
 COLLISION_TIME = -1
-if constants.RECORDING_NUMBER ==1:
-    COLLISION_TIME = 1682487988.45
+# if constants.RECORDING_NUMBER ==1:
+#     COLLISION_TIME = 1682487988.45
 
 # ROS TOPICS
 pose_topic = "/pose_data"
@@ -55,6 +55,7 @@ REACHABILITY_STEP_SLEEP_TIME = 0.1 # s
 REPLAY_SPEED = 1
 FPS = 10
 COLORS = ["blue","red","green","yellow","purple"]
+COLOR_MAP = {"blue":[0,0,255/255],"red":[255/255,0,0],"green":[0,127/255,0],"yellow":[255/255,165/255,0],"purple":[127/255,0,127/255]}
 
 # RECORDING GLOBAL VARIABLES
 global_video_writer = cv.VideoWriter('/home/ryan/Paper_Video/probability.avi', 
@@ -102,6 +103,10 @@ def pose_callback(pose_data):
             global_pose_time_history.insert(0,sensor_pose_time)
             # global_probability_collision_history.clear()
         else:
+            if len(global_pose_history)>0 and len(global_pose_history[0]) == 0:
+                global_pose_history.clear()
+                global_pose_time_history.clear()
+                global_actuation_history.clear()
             while(len(global_pose_history)>0 and abs(global_pose_time_history[len(global_pose_time_history)-1]-sensor_pose_time)>MAX_TIME_TO_TRACK_POSE):
                 global_pose_time_history.pop()
                 global_pose_history.pop()
@@ -165,13 +170,13 @@ def animate(i):
     global_subplot.set_ylim([0,1])
     global_subplot.set_ylabel("Probability of Collision",fontdict={'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 17})
+        'size'   : 16})
     global_subplot.set_xlabel("Timesteps Elapsed",fontdict={'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 17})
+        'size'   : 16})
     global_subplot.set_title("Future Probabilities of Collision",fontdict={'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 17})
+        'size'   : 16})
     if len(probability_collision_history)>0: #and len(probability_collision_history[0])>0:
         # SET START TIME FOR FRAME RECORDING
         if global_frame_recording_start_time is None:
@@ -186,15 +191,15 @@ def animate(i):
             # for val in y:
             #     if isinstance(val,list) or not(isinstance(val,float)):
             #         breakpoint()
-            color_to_display = COLORS[future_timestep_idx]
+            color_to_display = COLOR_MAP[COLORS[future_timestep_idx]]
             global_subplot.plot(x,y,color=color_to_display,label=str(future_timestep_idx+1)+" future time steps")
         if COLLISION_TIME > 0:
             global_subplot.vlines(x=[(COLLISION_TIME-probability_collision_history[0][0]) /constants.REACHABILITY_DT],ymin=0,ymax=1,color=(0,0,0),linestyles="dashed", label="Point of Collision")
     # global_subplot.legend(loc="upper left")
     global_figure.subplots_adjust(
         top=0.95,
-        bottom=0.11,
-        left=0.15,
+        bottom=0.100,
+        left=0.14,
         right=0.95,
         hspace=0.2,
         wspace=0.2

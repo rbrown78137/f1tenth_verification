@@ -82,7 +82,7 @@ def image_callback(new_image):
             min_y = max(0,bounding_box[2] - bounding_box[4] / 2)
             max_x = min(1,bounding_box[1] + bounding_box[3] / 2)
             max_y = min(1,bounding_box[2] + bounding_box[4] / 2)
-
+            # if (abs(max_y-min_y) / abs(max_x-min_x))<3 and abs(max_x-min_x) <0.8:
             top_left = (int(min_x * constants.camera_pixel_width),int(min_y * constants.camera_pixel_height))
             bottom_right = (int(max_x * constants.camera_pixel_width),int(max_y * constants.camera_pixel_height))
             

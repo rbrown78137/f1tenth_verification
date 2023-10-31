@@ -13,7 +13,7 @@ import verification.collision_verification.collision_verification_constants as c
 import time
 import copy
 
-CALCULATE_DENSITY = False
+CALCULATE_DENSITY = True
 
 
 VIEW_X_MIN = 0 
@@ -34,7 +34,7 @@ VIEW_Y_MAX = 0
 
 FUTURE_TIME_STEPS = 5
 PROBABILITY_SQUARE_DISTANCE = 0.1
-PROBABILITY_SQUARE_DISTANCE_REFINEMENT = 0.005 #0.01
+PROBABILITY_SQUARE_DISTANCE_REFINEMENT = 0.01 #0.01
 
 PROB_THRESHOLD = 1e-4 * PROBABILITY_SQUARE_DISTANCE **2
 CIRCLE_RADIUS = 0.02
@@ -42,7 +42,7 @@ RECTANGLE_WIDTH = 0.9 * CIRCLE_RADIUS
 MARKER_SIZE = 10
 COLORS = ["blue","red","green","yellow","purple"]
 COLOR_CONSTANT = 1
-COLOR_MAP = {"blue":[0,0,255],"red":[255,0,0],"green":[0,127,0],"yellow":[255,255,0],"purple":[127,0,127]}
+COLOR_MAP = {"blue":[0,0,255],"red":[255,0,0],"green":[0,127,0],"yellow":[255,165,0],"purple":[127,0,127]}
 # COLOR_MAP = {"blue":[255,255,255],"red":[255,255,255],"green":[255,255,255],"yellow":[255,255,255],"purple":[255,255,255]}
 font = {'family' : 'normal',
         'weight' : 'bold',
@@ -256,13 +256,13 @@ def get_graph_instance(pose_history,actuation_history,pose_time_history,reachabi
     # Display the image
     ax.imshow(final_image,aspect='auto',extent=(VIEW_X_MIN,VIEW_X_MAX,VIEW_Y_MIN,VIEW_Y_MAX))
     draw_centers(X_0, sigma_0, U_0, ax, draw_other_car)
-    ax.set_title("Predicted Movement of Both Vehicles",fontdict={'family' : 'normal',
+    ax.set_title("Distributions for Predicted Path",fontdict={'family' : 'normal',
         'weight' : 'bold',
         'size'   : 17})
-    ax.set_ylabel("Y",fontdict={'family' : 'normal',
+    ax.set_ylabel("Y (meters)",fontdict={'family' : 'normal',
         'weight' : 'bold',
         'size'   : 17})
-    ax.set_xlabel("X",fontdict={'family' : 'normal',
+    ax.set_xlabel("X (meters)",fontdict={'family' : 'normal',
         'weight' : 'bold',
         'size'   : 17})
     fig.subplots_adjust(
@@ -351,9 +351,9 @@ def get_VIEW(idx):
 if __name__ == "__main__":
     plt.ioff()
     plt.switch_backend('agg')
-    for i in range(7,8):
+    for i in range(1,9):
         get_VIEW(i)
-        with open('saved_data/new_video/frame_history_'+str(i)+'.pkl', 'rb') as f:
+        with open('saved_data/frame_history_'+str(i)+'.pkl', 'rb') as f:
             history = pickle.load(f)
             global_video_writer = cv.VideoWriter('/home/ryan/Paper_Video/car_tracker_'+str(i)+'.avi', 
                                 cv.VideoWriter_fourcc(*'MJPG'),

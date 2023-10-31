@@ -62,7 +62,9 @@ bridge = cv_bridge.CvBridge()
 
 fig = plt.figure(figsize=(6,6))
 ax1 = fig.add_subplot(1,1,1)
-colors = ["blue","red","green","yellow","purple"]
+COLORS = ["blue","red","green","yellow","purple"]
+COLOR_MAP = {"blue":[0,0,255/255],"red":[255/255,0,0],"green":[0,127/255,0],"yellow":[255/255,165/255,0],"purple":[127/255,0,127/255]}
+
 # colors.reverse()
 
 # Global Variables to hold sensor data between threads and different time steps
@@ -187,6 +189,10 @@ def pose_callback(pose_data):
             global_actuation_history.clear()
             global_pose_time_history.clear()
         else:
+            if len(global_pose_history)>0 and len(global_pose_history[0]) == 0:
+                global_pose_history.clear()
+                global_pose_time_history.clear()
+                global_actuation_history.clear()
             while(len(global_pose_history)>0 and abs(global_pose_time_history[len(global_pose_time_history)-1]-sensor_pose_time)>MAX_TIME_TO_TRACK_POSE):
                 global_pose_time_history.pop()
                 global_pose_history.pop()
@@ -210,10 +216,10 @@ def animate(i):
     ax1.set_ylim([-1,1])
     ax1.set_xlabel("$X_{\omega} - X_{\pi}$ (meters)",fontdict={'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 17})
+        'size'   : 16})
     ax1.set_ylabel("$Y_{\omega} - Y_{\pi}$ (meters)",fontdict={'family' : 'normal',
         'weight' : 'bold',
-        'size'   : 17})
+        'size'   : 16})
     sensor_global_variable_lock.acquire()
     polygon_copy = copy.deepcopy(last_set_of_polygons)
     sensor_global_variable_lock.release()
@@ -223,7 +229,7 @@ def animate(i):
         # ax1.set_xlim([0,0])
         # ax1.set_ylim([0,0])
         for index,polygon in enumerate(polygon_copy):
-            plot_polygon(polygon,color=colors[index],title=f"{index+1} Future Time Steps")
+            plot_polygon(polygon,color=COLOR_MAP[COLORS[index]],title=f"{index+1} Future Time Steps")
     # else:
     #     ax1.set_xlim([0,0])
     #     ax1.set_ylim([0,0])
@@ -234,8 +240,8 @@ def animate(i):
     plt.margins(x=0)
     fig.subplots_adjust(
         top=0.95,
-        bottom=0.11,
-        left=0.2,
+        bottom=0.10,
+        left=0.20,
         right=0.95,
         hspace=0.2,
         wspace=0.2
