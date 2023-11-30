@@ -97,7 +97,7 @@ if __name__ == "__main__":
             probs = lines_to_plot[braking_idx][2]
             colormap = cm.get_cmap('tab10')
 
-            ax.plot3D(timesteps, braking_forces, probs, color=colormap(braking_idx / constants.K_STEPS)) 
+            ax.plot3D(timesteps, braking_forces, probs, color=colormap(braking_idx/2 / constants.K_STEPS)) 
 
         plt.show()
         debug_var = 0

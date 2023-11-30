@@ -34,7 +34,7 @@ VIEW_Y_MAX = 0
 
 FUTURE_TIME_STEPS = 5
 PROBABILITY_SQUARE_DISTANCE = 0.1
-PROBABILITY_SQUARE_DISTANCE_REFINEMENT = 0.01 #0.01
+PROBABILITY_SQUARE_DISTANCE_REFINEMENT = 0.02 #0.01
 
 PROB_THRESHOLD = 1e-4 * PROBABILITY_SQUARE_DISTANCE **2
 CIRCLE_RADIUS = 0.02
@@ -83,8 +83,8 @@ def get_probability_image(X_0, sigma_0, U_0,draw_other_car=True):
     image_width_large_pass = int((VIEW_X_MAX - VIEW_X_MIN) / PROBABILITY_SQUARE_DISTANCE)
     image_height_large_pass = int((VIEW_Y_MAX - VIEW_Y_MIN) / PROBABILITY_SQUARE_DISTANCE)
 
-    image_width = int((VIEW_X_MAX - VIEW_X_MIN) / PROBABILITY_SQUARE_DISTANCE_REFINEMENT)
-    image_height = int((VIEW_Y_MAX - VIEW_Y_MIN) / PROBABILITY_SQUARE_DISTANCE_REFINEMENT)
+    image_width = int((VIEW_X_MAX - VIEW_X_MIN) / (PROBABILITY_SQUARE_DISTANCE_REFINEMENT))
+    image_height = int((VIEW_Y_MAX - VIEW_Y_MIN) / (PROBABILITY_SQUARE_DISTANCE_REFINEMENT))
     omega_image = np.ones((FUTURE_TIME_STEPS,image_height,image_width,3))
     pi_image = np.ones((FUTURE_TIME_STEPS,image_height,image_width,3))
     if CALCULATE_DENSITY:
@@ -125,18 +125,18 @@ def get_probability_image(X_0, sigma_0, U_0,draw_other_car=True):
                                 REFINE_X_MIN = X_MIN
                             if REFINE_Y_MIN > Y_MIN:
                                 REFINE_Y_MIN = Y_MIN
-                i_start =int( (REFINE_X_MIN - VIEW_X_MIN) / PROBABILITY_SQUARE_DISTANCE_REFINEMENT )
-                i_end =int( (REFINE_X_MAX - VIEW_X_MIN) / PROBABILITY_SQUARE_DISTANCE_REFINEMENT )
-                j_start =int( (VIEW_Y_MAX -REFINE_Y_MAX) / PROBABILITY_SQUARE_DISTANCE_REFINEMENT )
-                j_end =int( (VIEW_Y_MAX -REFINE_Y_MIN) / PROBABILITY_SQUARE_DISTANCE_REFINEMENT )
+                i_start =int( (REFINE_X_MIN - VIEW_X_MIN) / (PROBABILITY_SQUARE_DISTANCE_REFINEMENT) )
+                i_end =int( (REFINE_X_MAX - VIEW_X_MIN) / (PROBABILITY_SQUARE_DISTANCE_REFINEMENT) )
+                j_start =int( (VIEW_Y_MAX -REFINE_Y_MAX) / (PROBABILITY_SQUARE_DISTANCE_REFINEMENT) )
+                j_end =int( (VIEW_Y_MAX -REFINE_Y_MIN) / (PROBABILITY_SQUARE_DISTANCE_REFINEMENT) )
                 
                 small_probstars = []
                 for i in range(i_start,i_end,1):
                     for j in range(j_start,j_end,1):
-                        X_MIN = VIEW_X_MIN + i * PROBABILITY_SQUARE_DISTANCE_REFINEMENT
-                        X_MAX = VIEW_X_MIN + (i+1) * PROBABILITY_SQUARE_DISTANCE_REFINEMENT
-                        Y_MIN = VIEW_Y_MAX - (j+1) * PROBABILITY_SQUARE_DISTANCE_REFINEMENT
-                        Y_MAX = VIEW_Y_MAX - j * PROBABILITY_SQUARE_DISTANCE_REFINEMENT
+                        X_MIN = VIEW_X_MIN + i * (PROBABILITY_SQUARE_DISTANCE_REFINEMENT)
+                        X_MAX = VIEW_X_MIN + (i+1) * (PROBABILITY_SQUARE_DISTANCE_REFINEMENT)
+                        Y_MIN = VIEW_Y_MAX - (j+1) * (PROBABILITY_SQUARE_DISTANCE_REFINEMENT)
+                        Y_MAX = VIEW_Y_MAX - j * (PROBABILITY_SQUARE_DISTANCE_REFINEMENT)
                         probstars = collision_probability.car_omega_probstar_next_k_time_steps(X_MIN,X_MAX,Y_MIN,Y_MAX,FUTURE_TIME_STEPS,0,constants.REACHABILITY_DT,constants.MODEL_SUBTIME_STEPS,X_0,sigma_0,U_0,6)
                         probstar = probstars[timestep_idx]
                         small_probstars.append(probstar) 
@@ -195,18 +195,18 @@ def get_probability_image(X_0, sigma_0, U_0,draw_other_car=True):
                         if REFINE_Y_MIN > Y_MIN:
                             REFINE_Y_MIN = Y_MIN
 
-            i_start =int( (REFINE_X_MIN - VIEW_X_MIN) / PROBABILITY_SQUARE_DISTANCE_REFINEMENT )
-            i_end =int( (REFINE_X_MAX - VIEW_X_MIN) / PROBABILITY_SQUARE_DISTANCE_REFINEMENT )
-            j_start =int( (VIEW_Y_MAX -REFINE_Y_MAX) / PROBABILITY_SQUARE_DISTANCE_REFINEMENT )
-            j_end =int( (VIEW_Y_MAX -REFINE_Y_MIN) / PROBABILITY_SQUARE_DISTANCE_REFINEMENT )
+            i_start =int( (REFINE_X_MIN - VIEW_X_MIN) / (PROBABILITY_SQUARE_DISTANCE_REFINEMENT) )
+            i_end =int( (REFINE_X_MAX - VIEW_X_MIN) / (PROBABILITY_SQUARE_DISTANCE_REFINEMENT) )
+            j_start =int( (VIEW_Y_MAX -REFINE_Y_MAX) / (PROBABILITY_SQUARE_DISTANCE_REFINEMENT) )
+            j_end =int( (VIEW_Y_MAX -REFINE_Y_MIN) / (PROBABILITY_SQUARE_DISTANCE_REFINEMENT) )
             
             pi_small_probstars = []
             for i in range(i_start,i_end,1):
                 for j in range(j_start,j_end,1):
-                    X_MIN = VIEW_X_MIN + i * PROBABILITY_SQUARE_DISTANCE_REFINEMENT
-                    X_MAX = VIEW_X_MIN + (i+1) * PROBABILITY_SQUARE_DISTANCE_REFINEMENT
-                    Y_MIN = VIEW_Y_MAX - (j+1) * PROBABILITY_SQUARE_DISTANCE_REFINEMENT
-                    Y_MAX = VIEW_Y_MAX - j * PROBABILITY_SQUARE_DISTANCE_REFINEMENT
+                    X_MIN = VIEW_X_MIN + i * (PROBABILITY_SQUARE_DISTANCE_REFINEMENT)
+                    X_MAX = VIEW_X_MIN + (i+1) * (PROBABILITY_SQUARE_DISTANCE_REFINEMENT)
+                    Y_MIN = VIEW_Y_MAX - (j+1) * (PROBABILITY_SQUARE_DISTANCE_REFINEMENT)
+                    Y_MAX = VIEW_Y_MAX - j * (PROBABILITY_SQUARE_DISTANCE_REFINEMENT)
                     probstars = collision_probability.car_pi_probstar_next_k_time_steps(X_MIN,X_MAX,Y_MIN,Y_MAX,FUTURE_TIME_STEPS,0,constants.REACHABILITY_DT,constants.MODEL_SUBTIME_STEPS,X_0,sigma_0,U_0,6)
                     probstar = probstars[timestep_idx]
                     pi_small_probstars.append(probstar) 
