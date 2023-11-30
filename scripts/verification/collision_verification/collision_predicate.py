@@ -2,7 +2,6 @@ import math
 from math import atan2,atan,tan,cos
 import verification.collision_verification.collision_verification_constants as constants
 import numpy as np
-import verification.collision_verification.model_reachability as model_reachability
 
 # Input: 2 bounding boxes represented as a list of verticies corresponding to the covnex hull of bounding box 
 # Output: List of verticies of convex hull of minkowski difference
@@ -14,8 +13,9 @@ def minkowski_difference_2d_convex_hull(bounding_box_verticies_1,bounding_box_ve
     # Sort by Polar Angle
     bounding_box_verticies_1.sort(key=lambda x:atan2(x[1],x[0]))
     bounding_box_verticies_2.sort(key=lambda x:atan2(x[1],x[0]))
+
     # Create edges
-    # [dx,dy,origninal box edge belongs to, starting vertex in original box]
+    # [dx,dy,origninal box from which edge belongs to, index of vertex in original box]
     edges = []
     for vert_idx in range(len(bounding_box_verticies_1)):
         next_vert_idx = vert_idx + 1 if vert_idx + 1 < len(bounding_box_verticies_1) else 0
@@ -73,7 +73,7 @@ def convex_hull_vertex_array_to_linear_constraint(convex_hull_array):
         d = np.vstack([d,d_i])
     return C,d
 
-
+# Bounding Boxes in this implementation are defined as rectanges rotated to the estimated heading of the vehicle at that time step
 def car_bounding_box_verticies(width, length, angle):
     x1 = (length/2) * math.cos(angle) - (width/2) * math.sin(angle)
     y1 = (width/2) * math.cos(angle) + (length/2) * math.sin(angle)
@@ -96,7 +96,7 @@ def predicted_headings(k,reachability_dt,pose_data,V_pi,zeta_pi,V_omega,zeta_ome
 	H_omega = theta_omega + (V_omega*tan(zeta_omega)*cos(B_omega))/constants.WHEELBASE * k  * reachability_dt
 	return H_pi, H_omega
 
-
+# Main collision predicate described in paper
 def two_car_predicate(k,reachability_dt,pose_data,V_pi,zeta_pi,V_omega,zeta_omega):
     angle_pi, angle_omega = predicted_headings(k,reachability_dt,pose_data,V_pi,zeta_pi,V_omega,zeta_omega)
     car_pi = car_bounding_box_verticies(constants.PI_CAR_WIDTH, constants.PI_CAR_LENGTH, angle_pi)
@@ -107,7 +107,7 @@ def two_car_predicate(k,reachability_dt,pose_data,V_pi,zeta_pi,V_omega,zeta_omeg
     d=d_s   
     return C,d
 
-# 
+# Predicate Used for Plotting / Testing to determine if car y is within the bounds of car omega
 def car_pi_within_bounds_of_car_omega(k,reachability_dt,pose_data,V_pi,zeta_pi,V_omega,zeta_omega):
     angle_pi, angle_omega = predicted_headings(k,reachability_dt,pose_data,V_pi,zeta_pi,V_omega,zeta_omega)
     car_omega = car_bounding_box_verticies(constants.OMEGA_CAR_WIDTH, constants.OMEGA_CAR_LENGTH, angle_omega)
@@ -116,6 +116,7 @@ def car_pi_within_bounds_of_car_omega(k,reachability_dt,pose_data,V_pi,zeta_pi,V
     d=d_s   
     return C,d
 
+ 
 def predicate_next_k_timesteps(k,reachability_dt,X_0,U_0):
     V_pi,zeta_pi,V_omega,zeta_omega = U_0
     predicates = []
@@ -123,26 +124,3 @@ def predicate_next_k_timesteps(k,reachability_dt,X_0,U_0):
         H,g = two_car_predicate(reachability_timestep_idx,reachability_dt,X_0[4:8],V_pi,zeta_pi,V_omega,zeta_omega)
         predicates.append([H,g])
     return predicates
-
-# def predicate_next_k_timesteps(k,reachability_dt,X_0,sigma_0,U_0):
-#     predicates = []
-
-#     model_dt = reachability_dt / 10
-#     V_pi,zeta_pi,V_omega,zeta_omega = U_0
-#     # Convert Initial State to Probstar 
-#     c = (np.expand_dims(X_0, axis=0)).transpose()
-#     V = np.diag(sigma_0)
-
-#     # Assemble probstars k = reachability_start_idx to k = k_max
-#     for reachability_timestep_idx in range(k):
-#         for model_timestep_idx in range(10):
-#             A = model_reachability.two_car_A(V_pi,zeta_pi,V_omega,zeta_omega,model_dt)
-#             c = np.matmul(A,c)
-#             V = np.matmul(A, V)
-
-#         # Apply Collision Bounding Predicate
-#         H,g = two_car_predicate(reachability_timestep_idx,reachability_dt,X_0[4:8],V_pi,zeta_pi,V_omega,zeta_omega)
-#         C = np.matmul(H,V)
-#         d = g-np.matmul(H,c)
-#         predicates.append([np.asarray(C),np.asarray(d)])
-#     return predicates

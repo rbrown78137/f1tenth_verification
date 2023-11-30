@@ -1,6 +1,7 @@
 import math
+
 WHEELBASE = 0.4 # m
-PI_AVERAGE_STEERING_ANGLE_ERROR = 0.0174533 # 1 degrees
+PI_AVERAGE_STEERING_ANGLE_ERROR = 0.0174533 # 1 degree. Variable used to store average error in output steering angle when compared with command from control 
 MAX_CAR_STEERING_ANGLE = 0.523599 # 40 degrees
 MAX_CAR_CURVATURE = 1 / math.sqrt(WHEELBASE**2 *(1/4 + math.cos(MAX_CAR_STEERING_ANGLE)**2 / math.cos(MAX_CAR_STEERING_ANGLE)**2))
 MINIMUM_VELOCITY_CLIPPING_VALUE = 0.10 #m/s. Minimum velocity for moving objects. Prevents long term drift of stationary objects

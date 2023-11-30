@@ -6,6 +6,8 @@ import verification.collision_verification.collision_predicate as collision_pred
 import verification.collision_verification.initial_state as initial_state
 import copy
 
+
+# Main Quantitative Verification Problem in Paper
 def probstar_next_k_time_steps(k,reachability_start_idx,reachability_dt,model_sub_time_steps,pose_history,actuation_history,pose_dt_history,standard_deviations=6):
 	model_dt = reachability_dt / model_sub_time_steps
 
@@ -29,8 +31,9 @@ def probstar_next_k_time_steps(k,reachability_start_idx,reachability_dt,model_su
 			c = np.matmul(A, c)
 			V = np.matmul(A, V)
 
-	# Assemble probstars k = reachability_start_idx to k = k_max
+	# Assemble probstars k = reachability_start_idx to k = k_max to verify
 	for reachability_timestep_idx in range(k):
+		# State Space iteration
 		for model_timestep_idx in range(model_sub_time_steps):
 			A = model_reachability.two_car_A(V_pi,zeta_pi,V_omega,zeta_omega,model_dt)
 			c = np.matmul(A,c)
@@ -49,7 +52,7 @@ def probstar_next_k_time_steps(k,reachability_start_idx,reachability_dt,model_su
 		probstars.append(probstar)
 	return probstars
 
-
+# Main Quantitative Verification Problem in Paper (assumes initial state is precomputed)
 def probstar_next_k_time_steps_given_initial_state(k,reachability_start_idx,reachability_dt,model_sub_time_steps,X_0,sigma_0,U_0,standard_deviations=6):
 	model_dt = reachability_dt / model_sub_time_steps
 	V_pi,zeta_pi,V_omega,zeta_omega = U_0
@@ -70,8 +73,9 @@ def probstar_next_k_time_steps_given_initial_state(k,reachability_start_idx,reac
 			c = np.matmul(A, c)
 			V = np.matmul(A, V)
 
-	# Assemble probstars k = reachability_start_idx to k = k_max
+	# Assemble probstars k = reachability_start_idx to k = k_max to verify
 	for reachability_timestep_idx in range(k):
+		# State Space iteration
 		for model_timestep_idx in range(model_sub_time_steps):
 			A = model_reachability.two_car_A(V_pi,zeta_pi,V_omega,zeta_omega,model_dt)
 			c = np.matmul(A,c)
@@ -98,7 +102,7 @@ def single_thread_future_collision_probabilites(k,reachability_start_idx,reachab
 		probabilities.append(probstar.estimateProbability())
 	return probabilities
 
-
+# Multicore example assumes initial state is precomputed to save computation time
 def multi_core_future_collision_probabilites(k,reachability_start_idx,reachability_dt,model_sub_time_steps,X_0,sigma_0,U_0,standard_deviations=6):
 	probstars = probstar_next_k_time_steps_given_initial_state(k,reachability_start_idx,reachability_dt,model_sub_time_steps,X_0,sigma_0,U_0,standard_deviations)
 	probabilities = []
@@ -106,7 +110,7 @@ def multi_core_future_collision_probabilites(k,reachability_start_idx,reachabili
 		probabilities.append(probstar.estimateProbability())
 	return probabilities
  
-
+# 
 def car_omega_probstar_next_k_time_steps(X_MIN,X_MAX,Y_MIN,Y_MAX,k,reachability_start_idx,reachability_dt,model_sub_time_steps,X_0,sigma_0,U_0,standard_deviations):
 	model_dt = reachability_dt / model_sub_time_steps
 	V_pi,zeta_pi,V_omega,zeta_omega = U_0
